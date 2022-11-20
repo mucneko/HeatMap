@@ -11,9 +11,9 @@ $Data::Dumper::Sortkeys = 1;   # Dumperdaten sortiert (sort) ausgeben
 
 use Test::Simple tests => 2;
 
-my $d = 0; # 0|1 Debugging
+my $d = 1; # 0|1 Debugging
 
-my $ColorFile = '../t/TestColor.Map';
+my $ColorFile = shift // '../t/TestColor.Map';
 my $startColorMap = {
 -10 => [ 255, 255, 255 ], # keine Angabe
  0 => [ 210, 255, 210 ],

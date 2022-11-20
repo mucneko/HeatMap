@@ -9,11 +9,11 @@ use Neko::HeatMap;
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;   # Dumperdaten sortiert (sort) ausgeben
 
-use Test::Simple tests => 2;
+use Test::Simple tests => 1;
 
-my $d = 0; # 0|1 Debugging
+my $d = 1; # 0|1 Debugging
 
-my $ColorFile = '../t/TestColor.Map';
+my $ColorFile = shift // '../t/TestColor.Map';
 my $startColorMap = {
 -10 => [ 255, 255, 255 ], # keine Angabe
  0 => [ 210, 255, 210 ],
@@ -29,37 +29,7 @@ if ( $HeatMap->hasErrors() ) {
     exit 1;
 }
 
-# should work
-my $Config = $HeatMap->setColorMap( 'map' => $startColorMap );
-if ( $HeatMap->hasErrors() ) {
-    print "Fehler beim setColorMap: \n". join("\n", @{ $HeatMap->hasErrors()} )."\n";
-    ok ( 1 == 2 );
-    exit 2;
-}
-
-
-my $colorMap = $HeatMap->getColorMap();
-
-print Dumper($colorMap) if $d;
-
-if ( $HeatMap->hasErrors() ) {
-    print "Fehler beim getColorMap \n". join("\n", @{ $HeatMap->hasErrors()} )."\n";
-    ok ( 1 == 2 );
-    exit 1;
-}
-else { 
-    if ( $colorMap->{'10'}[1] == 255 ) {
-        ok ( 1 == 1 ) ;
-    }
-    else {
-        print "Fehler beim getColorMap aus File \$colorMap->{'10'}[1] = $colorMap->{'10'}[1] nicht 255\n";
-        ok ( 1 == 2 );
-        exit 2;
-    }
-}
-
-# same with File
-$Config = $HeatMap->setColorMap( 'file' => $ColorFile );
+my $Config = $HeatMap->setColorMap( 'file' => $ColorFile );
 
 if ( $HeatMap->hasErrors() ) {
     print "Fehler beim setColorMap aus fiel $ColorFile: \n". join("\n", @{ $HeatMap->hasErrors()} )."\n";
@@ -67,7 +37,7 @@ if ( $HeatMap->hasErrors() ) {
     exit 2;
 }
 
-$colorMap = $HeatMap->getColorMap();
+my $colorMap = $HeatMap->getColorMap();
 
 print Dumper($colorMap) if $d;
 
