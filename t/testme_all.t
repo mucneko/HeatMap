@@ -33,6 +33,12 @@ $Data::Dumper::Sortkeys = 1;   # Dumperdaten sortiert (sort) ausgeben
 my @test_files = qw (
                       new.t
                       uses.t
+                      hmF_getConfig.t
+                      HeatMap::getConfig.t
+                      HeatMap::setConfig.t
+                      hmF_loadColorMap.t
+                      HeatMap::getColorMap.t
+                      HeatMap::setColorMap.t
                     );
 
 runtests(@test_files);

@@ -25,6 +25,7 @@ our (@ISA, @EXPORT);
               doit
               usage_and_die
               hmF_getConfig
+              hmF_loadColorMap
             );
 
 my $d = 0; #Debuginf 0|1
@@ -562,6 +563,26 @@ sub hmF_getConfig
     }
 
 print "Neko::hmFunctions::hmF_getConfig returne: ".Dumper(\%erg) if $d;
+
+    return %erg;
+}
+
+# get filecontent and return COLORMAP
+# my $hasref = hmF_loadColorMap( <file> )
+sub hmF_loadColorMap
+{
+    my $file = shift // '';
+
+    my %erg = (
+             'errormsg' => [],
+    );
+
+    if ( -f $file ) {
+        our $COLOR_MAP;
+        require $file; 
+        $erg{'colorMap'} = $COLOR_MAP;
+    }
+    else { push ( @{$erg{'errormsg'}}, "Neko::hmFunctions::hmF_loadColorMap $file nicht gefunden." ); }
 
     return %erg;
 }

@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use lib qw( ../lib );
+
 # Tests für HeatMap
 # Alle zu usenden Module
 

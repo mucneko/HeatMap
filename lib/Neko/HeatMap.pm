@@ -88,7 +88,36 @@ sub setConfig {
     $self->{'Config'};
 }
 
+sub getColorMap {
+    my $self = shift;
+    return $self->{'ColorMap'};
+}
 
+# $HeatMap->setColorMap( 'file' => 'filename');
+# $HeatMap->setColorMap( 'map' => \%map );
+sub setColorMap {
+    my $self = shift;
+    my %args = @_;
+
+    if ( $args{'file'} ){
+        my %erg = hmF_loadColorMap( $args{'file'} );
+
+        if ( scalar ( @{ $erg{'errormsg'} } ) ) {
+            push @{$self->{'errormsg'}}, @{ $erg{'errormsg'} };
+            return;
+        }
+
+        $self->{'ColorMap'} = $erg{'colorMap'} ;
+    }
+
+    elsif ( $args{'map'} ) {
+        $self->{'ColorMap'} = $args{'map'} ;
+    }
+
+    else {
+        push @{$self->{'errormsg'}}, "HeatMap::setColorMap unbekannter Parameter. Erwartet: 'map' oder 'file'";
+    }
+}
 
 
 sub hasErrors {
@@ -96,11 +125,8 @@ sub hasErrors {
     return $self->{'errormsg'};
 }
 
-
-
-
-
-
+sub createImage {}
+sub exportImage {}
 
 
 
