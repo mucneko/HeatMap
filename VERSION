@@ -1,3 +1,8 @@
--3.0
+0.9
 
-ja, das ist noch nicht mal eine 0.0 Version.
+Da ändert sich eventuell noch der parse-Data-Aufruf.
+Errorhandling ist auch noch etwas sehr dünn.
+Automatische Tests fehlen weitestgehendst.
+
+Makefile ... dürfte noch nicht gehen. Wäre eh ein 
+make install und make test
