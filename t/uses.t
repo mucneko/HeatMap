@@ -29,6 +29,7 @@ my @mods = qw (
                     Imager
                     Imager::Fill
                     Neko::HeatMap
+                    Getopt::Std
                 );
 
 foreach my $mo (@mods) {

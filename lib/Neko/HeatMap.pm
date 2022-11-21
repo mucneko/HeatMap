@@ -136,22 +136,20 @@ sub createImage {
     my $Config = $self->getConfig();
 
     my $kw = $args{'kw'};
+    my $kurz = $args{'kuerzel'};
 
     # Bildausgabe Breit/Hoehe
-    my $img_x = $Config->{'HeatMap'}{'img_x'} // 1200;
+    my $img_x = $Config->{'HeatMap'}{'img_x'} || 1200;
     # my $img_y = 1050;
-    my $img_y = $Config->{'HeatMap'}{'img_y'} // 1150;
-
-    my $kurze = $Config->{'HeatMapOrte'};
-    my $ort = $kurze->{$kurz};
+    my $img_y = $Config->{'HeatMap'}{'img_y'} || 1150;
 
     # Farbe vom Bildhintergrund (der ist sonst beim gif weiss und beim jpg schwarz)
     # my $bgcolor = $Config->{'HeatMap'}{'bgcolor'};
     my $bgcolor = Imager::Color->new( $Config->{'HeatMap'}{'bgcolor'} );
 
-    my $scheme = Imager::Color->new( $Config->{'HeatMap'}{'scheme'} ) // 'orig';
+    my $scheme = Imager::Color->new( $Config->{'HeatMap'}{'scheme'} ) || 'orig';
 
-    my @infiles = @ { $args{'infiles'} };
+    my $infiles = $args{'infiles'};
 
     my $img = Imager->new(
         xsize  => $img_x,        # Image width
@@ -162,60 +160,54 @@ sub createImage {
 
     $self->{'Image'} = $img;
 
-    $self->parseData ( 'files' => @infiles ); # stored in \@ $self->Image->datamatrix
-    $self->buildMainImage ( 'scheme' => $scheme , 'kw' => $kw ); # stored in \@ $self->Image->datamatrix
-    
- 
-# Noch die Ueberschrift drueber
-$img->string(x => ( ( $feldSizex*2)+$offsetx) , y => 40,
-             font => $font,
-             string => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter',
-             color => 'black',
-             size => $feldSizex*2,
-             aa => 3);
+    $self->parseData ( 'files' => $infiles, 'kw' => $kw ); # stored in \@ $self->Image->datamatrix
+    $self->buildMainImage ( 'scheme' => $scheme , 'kw' => $kw, 'kurz' => $kurz ); # stored in \@ $self->Image->datamatrix
  
 }
 
-# $HeatMap->exportImage ( 'image' => Imager::new , 'filename' => $filename, 'format' => 'gif' )
+# $HeatMap->exportImage ( 'filename' => $filename, 'format' => 'gif' )
 sub exportImage {
     my $self = shift;
     my %args = @_;
-    my $img = $args{'image'};
-    my $fn = $args{'filename'};
-    my $format = $args{'format'} // 'sgi';
+
+    my $img = $self->{'Image'};
+    my $fn = $args{'filename'} || '';
+    my $format = $args{'format'} || 'sgi';
     my $file = 'platzhalter';
     my $saved = 0;
 
+
     # for my $f ( qw( gif jpeg ) ) 
     # jpg is bigger than gif
-    for my $f ( qw( $format ) ) {
+    # foreach my $f ( qw "$format" ) {
+    my $f = $format;
 
         # Check if given format is supported
-        if ($Imager::formats{$f}) {
+        if ( $Imager::formats{$f} ) {
             # my $fn = $file."_".   sprintf("%02d", $kw).".".$f;
             $fn = $file.'.'.$f unless $fn;
             print "Storing image as: $fn\n";
  
             $img->write(file=>$fn) or
-# XXXXX hier Fehlerbehandlung statt die!
                 die $img->errstr;
+# XXXXX hier Fehlerbehandlung statt die!
             $saved = 1;
 
         }
-    }
+    # }
     
 }
 
 
 
-# parseData ( 'files' => @files );
+# parseData ( 'files' => @files, 'kw' => $kw );
 sub parseData
 {
     my $self = shift;
     my %args = @_;
     my @infiles = @{ $args{'files'} };
+    my $kw = $args{'kw'};
 
-# rki-Daten parsen - auslagern
     my @rki = ();
     # files der Reihe nach einlesen
 
@@ -273,20 +265,28 @@ sub parseData
     $self->{'Image'}{'datamatrix'} = \@rki;
 }
 
-# buildMainImage ( 'scheme' => <name> , 'kw' => $kw );
+# buildMainImage ( 'scheme' => <name> , 'kw' => $kw, 'kurz' => <ortskuerzel> );
 sub buildMainImage {
 
     my $self = shift;
     my %args = @_;
     my $kw = $args{'kw'};
+    my $kurz = $args{'kurz'};
     my $scheme = $args{'scheme'};
+
+    my $Config = $self->getConfig();
+    my $copy = $Config->{'HeatMap'}{'copy'};
+
+    my $kurze = $Config->{'HeatMapOrte'};
+    my $ort = $kurze->{$kurz};
 
     # split here for special patterns
 
     if ( lc ( $scheme ) eq '' ){
         $self->ORIG_scheme( 'kw' => $kw ) ; 
         $self->buildOrigFarblegende ();
-        $self->buildOrigCopyright ();
+        $self->buildOrigCopyright ( 'text' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
+        $self->buildOrigHeadline( 'headline' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
     }
     # elsif ( lc ( $scheme ) eq 'xxx' ){}
     else { $self->ORIG_scheme( 'kw' => $kw ) ; }
@@ -295,7 +295,8 @@ sub buildMainImage {
 
 
 # eventuell in ein eigenes pm auslagern, was dann nachgeladen wird und gleichnamige subs hat
-sub ORIG_scheme( 'kw' => $kw )
+# ORIG_scheme( 'kw' => $kw )
+sub ORIG_scheme
 {
     my $self = shift;
     my %args = @_;
@@ -307,19 +308,28 @@ sub ORIG_scheme( 'kw' => $kw )
     my $img = $self->{'Image'};
     my @matrix = @{ $self->{'Image'}{'datamatrix'} };
 
+    my @rki = @{ $self->{'Image'}{'datamatrix'} };
+
     my $feldSizex = $Config->{'HeatMap'}{'feldSize_x'};
     my $feldSizey = $Config->{'HeatMap'}{'feldSize_y'};
     my $offsetx = $Config->{'HeatMap'}{'offset_x'};
-    my $offsety $Config->{'HeatMap'}{'offset_y'};
-    my $colors # $color = @{$colors->{$weight}};
+    my $offsety = $Config->{'HeatMap'}{'offset_y'};
+    my $colors = $self->getColorMap();
     my $KW_fontSize = $feldSizex;
+
+    my @verwendeteWerte = ();
 
     # ttf-Font von System verwenden 
     my $font_file = $Config->{'HeatMap'}{'font_file'};
 # XXXX das die noch abfangen
-    my $font = Imager::Font->new(file => $font_file ) or die;
+    my $font = Imager::Font->new( file => $font_file ) or die $!;
+
+    if ( $self->hasErrors() ) {
+        return;
+    }
 
     my @point_datas = ();
+    my @border_color = [ 0, 0, 0 ];
 
 # print Dumper(\@point_datas);
 
@@ -357,7 +367,10 @@ sub ORIG_scheme( 'kw' => $kw )
 # print '$t: '.$t."\n";
 
         # Ausgabe auf der Shell letzte Spalte
-        if ( $t == $kw-1 ){ print "$ag: $feld\n"; }
+        if ( $t == $kw-1 ){
+            # print "$ag: $feld\n"; 
+            push @verwendeteWerte, "$ag: $feld";
+        }
 
         $fc++;
         # last if ( $fc > $kw );
@@ -454,10 +467,13 @@ sub ORIG_scheme( 'kw' => $kw )
                  aa => 1);
     }
 
-    
+    $self->{'parsedData'}{'lastkw'} = \@verwendeteWerte;
 
+
+    
 }
 
+# Farb-Legende unten
 sub buildOrigFarblegende
 {
     my $self = shift;
@@ -465,113 +481,132 @@ sub buildOrigFarblegende
 
     my $Config = $self->getConfig();
 
-    my $kurze = $Config->{'HeatMapOrte'};
-    my $ort = $kurze->{$kurz};
+    my $feldSizex = $Config->{'HeatMap'}{'feldSize_x'};
+    my $feldSizey = $Config->{'HeatMap'}{'feldSize_y'};
+    my $offsetx = $Config->{'HeatMap'}{'offset_x'};
+    my $offsety = $Config->{'HeatMap'}{'offset_y'};
+    my $colors = $self->getColorMap(); # $color = @{$colors->{$weight}};
 
-    # XXXXX HIER Config auslutschen
+    # ttf-Font von System verwenden 
+    my $font_file = $Config->{'HeatMap'}{'font_file'};
+# XXXX das die noch abfangen
+    my $font = Imager::Font->new(file => $font_file ) or die;
 
-    # Farb-Legende unten
+    my $img = $self->{'Image'};
 
-$i = '';
-my $c = 0;
-my $y = 20*$feldSizey + $offsety;
-# my $x = $feldSizex + $offsetx;
-my $x = $feldSizex;
+    my @border_color = [ 0, 0, 0 ];
+
+    my $i = '';
+    my $c = 0;
+    my $y = 20*$feldSizey + $offsety;
+    # my $x = $feldSizex + $offsetx;
+    my $x = $feldSizex;
 
 
-foreach my $l ( sort { $a <=> $b } ( keys %{$colors} ) ){
+    foreach my $l ( sort { $a <=> $b } ( keys %{$colors} ) ){
 
-    next if ( $l < 0 );
+        next if ( $l < 0 );
+    
+        # $c++;
 
-    # $c++;
-
-    my $von = $l;
+        my $von = $l;
        $von = $l - 5 if( $l>4);
-    my $bis = ($l*1 +4);
-    if ( $l >= 100 ) {
+        my $bis = ($l*1 +4);
+        if ( $l >= 100 ) {
             $von = $l - 25;
             $bis = $l*1 +24;
-    }
-    if ( $l >= 1000 ) {
+        }
+        if ( $l >= 1000 ) {
             $von = $l - 50;
             $bis = $l +49;
-    }
+        }
 
-    $i = "$von - $bis";
-    if ( $c +1 >= ( scalar ( keys %{$colors} ) -1 ) ) {   $i = " > $von"; }
+        $i = "$von - $bis";
+        if ( $c +1 >= ( scalar ( keys %{$colors} ) -1 ) ) {   $i = " > $von"; }
 
-    $img->string(x => $x+$feldSizex+5 , y => $y -5,
+        $img->string(x => $x+$feldSizex+5 , y => $y -5,
              font => $font,
              string =>  $i,
              color => 'black',
              size => $feldSizex*0.75,
              aa => 1);
 
-    my $fill = Imager::Fill->new(solid => $colors->{$l}, combine => 'normal');
+        my $fill = Imager::Fill->new(solid => $colors->{$l}, combine => 'normal');
 
-    $img->box( xmin=> $x, ymin=> $y -$feldSizey ,
+        $img->box( xmin=> $x, ymin=> $y -$feldSizey ,
                xmax=> $x+$feldSizex, ymax=> $y ,
                fill=> $fill
-    );
+        );
 
-    # Kasterl drum - platt brutal gewachsen ohne Intelligenz
-    if ( $l > 4200 ) {
-        my @mborder_color = $colors->{ ($l -4200) } ;
+        # Kasterl drum - platt brutal gewachsen ohne Intelligenz
+        if ( $l > 4200 ) {
+            my @mborder_color = $colors->{ ($l -4200) } ;
 
-        foreach my $i ( 9..10 ) {
-            $img->box( color=> @mborder_color,
-                  xmin=> $x +$i, ymin=> $y -$feldSizey +$i,
-                  xmax=> $x+$feldSizex -$i, ymax=> $y -$i,
-                  filled => 0 ,
-                  aa => 4);
+            foreach my $i ( 9..10 ) {
+                $img->box( color=> @mborder_color,
+                      xmin=> $x +$i, ymin=> $y -$feldSizey +$i,
+                      xmax=> $x+$feldSizex -$i, ymax=> $y -$i,
+                      filled => 0 ,
+                      aa => 4);
+            }
         }
-    }
-    if ( $l > 2200 ) {
-        my @mborder_color = $colors->{ ($l -2200) } ;
+        if ( $l > 2200 ) {
+            my @mborder_color = $colors->{ ($l -2200) } ;
 
-        foreach my $i ( 5..7 ) {
-            $img->box( color=> @mborder_color,
-                  xmin=> $x +$i, ymin=> $y -$feldSizey +$i,
-                  xmax=> $x+$feldSizex -$i, ymax=> $y -$i,
-                  filled => 0 ,
-                  aa => 4);
+            foreach my $i ( 5..7 ) {
+                $img->box( color=> @mborder_color,
+                      xmin=> $x +$i, ymin=> $y -$feldSizey +$i,
+                      xmax=> $x+$feldSizex -$i, ymax=> $y -$i,
+                      filled => 0 ,
+                      aa => 4);
+            }
         }
-    }
 
-    $img->box( color=> @border_color,
+        $img->box( color=> @border_color,
                   xmin=> $x, ymin=> $y -$feldSizey,
                   xmax=> $x+$feldSizex, ymax=> $y,
                   filled => 0 ,
                   aa => 4);
 
-    $c++;
-# print "c: $c\n";
-    # if ( ( $c % 5 ) == 0 ) {
+        $c++;
+    # print "c: $c\n";
+        # if ( ( $c % 5 ) == 0 ) {
         # $x += nlowmult ( 1, ($c / 5) )  + ( $feldSizex*5 );
         # $y = 19*$feldSizey + 2*$offsety;
     # }
-    if ( ( $c % 8 ) == 0 ) {
-        # $x += nlowmult ( 1, ($c / 8) )  + ( $feldSizex*8 );
-        $x += nlowmult ( 1, ($c / 8) )  + ( $feldSizex*5 );
-        $y = 19*$feldSizey + 2*$offsety;
+        if ( ( $c % 8 ) == 0 ) {
+            # $x += nlowmult ( 1, ($c / 8) )  + ( $feldSizex*8 );
+            $x += nlowmult ( 1, ($c / 8) )  + ( $feldSizex*5 );
+            $y = 19*$feldSizey + 2*$offsety;
+        }
+
+        else {
+            $y = $y+$feldSizey;
+        }
     }
 
-    else {
-        $y = $y+$feldSizey;
-    }
 }
 
-}
-
+# buildOrigCopyright( 'text' => <copyrightText> );
 sub buildOrigCopyright
 {
     my $self = shift;
     my %args = @_;
 
     my $Config = $self->getConfig();
+    my $img = $self->{'Image'};
 
-    my $kurze = $Config->{'HeatMapOrte'};
-    my $ort = $kurze->{$kurz};
+    my $copyDetails = $args{'text'} || '';
+
+    my $feldSizex = $Config->{'HeatMap'}{'feldSize_x'};
+    my $offsetx = $Config->{'HeatMap'}{'offset_x'};
+    my $copy = $Config->{'HeatMap'}{'copy'};
+    my $copyFont = $feldSizex;
+
+    # ttf-Font von System verwenden 
+    my $font_file = $Config->{'HeatMap'}{'font_file'};
+# XXXX das die noch abfangen
+    my $font = Imager::Font->new(file => $font_file ) or die;
 
 
     # Copyright drunterkleben
@@ -590,7 +625,7 @@ sub buildOrigCopyright
     # Noch die Ueberschrift drueber
     $img->string(x => ( ( $feldSizex*2)+$offsetx) , y => 40,
              font => $font,
-             string => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter',
+             string => $copyDetails,
              color => 'black',
              size => $feldSizex*2,
              aa => 3);
@@ -599,15 +634,14 @@ sub buildOrigCopyright
 
 }
 
+# buildOrigHeadline ( 'headline' => <headline> );)
 sub buildOrigHeadline
 {
     my $self = shift;
     my %args = @_;
     my $Config = $self->getConfig();
 
-    my $kurze = $Config->{'HeatMapOrte'};
-    my $ort = $kurze->{$kurz};
-
+    my $headline = $args{'headline'};
 
     my $img = $self->{'Image'};
 
@@ -622,12 +656,10 @@ sub buildOrigHeadline
     # Noch die Ueberschrift drueber
     $img->string(x => ( ( $feldSizex*2)+$offsetx) , y => 40,
              font => $font,
-             string => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter',
+             string => $headline,
              color => 'black',
              size => $feldSizex*2,
              aa => 3);
-
-
 }
 
 
@@ -635,9 +667,9 @@ sub xxx
 {
 
 # Kommandozeilenparameter:
-my $kurz = shift // 'MUC';
-my $kw = shift // 52;
-my $use_this_filename = shift // '';
+my $kurz = shift || 'MUC';
+my $kw = shift || 52;
+my $use_this_filename = shift || '';
 my @infiles = @ARGV;
 
 # -h - Hilfe der Ordnung halber hingefaked

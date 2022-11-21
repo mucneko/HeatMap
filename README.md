@@ -2,4 +2,4 @@
 
 Ihr braucht ImageMagic und Perl. Sonst wirds nix.
 
-ausserdem bin ich noch nicht vertig.
+ausserdem bin ich noch nicht fertig.
