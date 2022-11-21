@@ -282,14 +282,20 @@ sub buildMainImage {
 
     # split here for special patterns
 
-    if ( lc ( $scheme ) eq '' ){
+    if ( lc ( $scheme ) eq 'orig' ){
         $self->ORIG_scheme( 'kw' => $kw ) ; 
         $self->buildOrigFarblegende ();
         $self->buildOrigCopyright ( 'text' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
         $self->buildOrigHeadline( 'headline' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
     }
     # elsif ( lc ( $scheme ) eq 'xxx' ){}
-    else { $self->ORIG_scheme( 'kw' => $kw ) ; }
+    # noch ist es doppelt
+    else { 
+        $self->ORIG_scheme( 'kw' => $kw ) ; 
+        $self->buildOrigFarblegende ();
+        $self->buildOrigCopyright ( 'text' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
+        $self->buildOrigHeadline( 'headline' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
+    }
 
 }
 
