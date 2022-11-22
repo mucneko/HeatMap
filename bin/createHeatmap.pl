@@ -21,6 +21,7 @@ my $configFile = '';
 my $use_this_output_filename = '';
 my $kurz = 'MUC';
 my $kw = 52;
+my $scheme = 'orig';
 
 &usage_and_die() if ($#ARGV < 0);
 
@@ -54,6 +55,10 @@ my $HeatMap = new Neko::HeatMap( 'configFile' => $configFile );
 
 my $Config = $HeatMap->getConfig();
 &errors_die( $HeatMap );
+
+if ( $Config->{'HeatMap'}{'scheme'} ) {
+    $scheme = $Config->{'HeatMap'}{'scheme'};
+}
 
 $HeatMap->setColorMap( 'file' => $Config->{'HeatMapUser'}{'colorMap'} );
 &errors_die( $HeatMap );
