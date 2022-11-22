@@ -9,7 +9,7 @@ Status: Errorhandling noch einbauen (weitestgehendst markiert)
 parseData-Funktion eventuell rausziehen und von auﬂen aufrufbar machen. Ich denke noch.
 
 2Do:
-- add general Errorhandling! don't forget everything with external data that coul go wrong!
+- add general Errorhandling! don't forget everything with external data that could go wrong!
 - Strings auslagern (language vorbereiten)
 
 - 2. scheme monochromatic : farbe nach Liste ohne Sonderspielchen
