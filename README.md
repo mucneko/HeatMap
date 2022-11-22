@@ -17,6 +17,3 @@ parseData-Funktion eventuell rausziehen und von außen aufrufbar machen. Ich denk
 
 - rausfinden, ob vorwärtst-rückwärts schmerzfrei geht (0-0Punkt tauschen)
 - Schrift hochkant stellen - testen
-
-- austesten ob man früher PERLLIB ziehen und setzen kann.
-- austesten, welche Grenzen use XYZ; hat ( versch. Arten, Bilder aufzubauen, gehen mehrere hintereinander? )

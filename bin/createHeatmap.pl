@@ -3,12 +3,12 @@
 use strict;
 use warnings;
 
-use lib qw(
-            /Users/neko/perl5/lib/perl5/darwin-thread-multi-2level
-            /Users/neko/perl5/lib/perl5
-            /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib
-            /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib/colorschemes
-        );
+use lib qw (
+               /Users/neko/perl5/lib/perl5/darwin-thread-multi-2level
+               /Users/neko/perl5/lib/perl5
+               /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib
+               /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib/colorschemes
+           );
 
 use Neko::HeatMap;
 use Getopt::Std;
@@ -50,10 +50,13 @@ my @infiles = @ARGV;
 
 # HeatMap anlegen
 my $HeatMap = new Neko::HeatMap( 'configFile' => $configFile );
+&errors_die( $HeatMap );
 
 my $Config = $HeatMap->getConfig();
+&errors_die( $HeatMap );
 
 $HeatMap->setColorMap( 'file' => $Config->{'HeatMapUser'}{'colorMap'} );
+&errors_die( $HeatMap );
 
 # HeatMap Image create
 $HeatMap->createImage( 'kuerzel' => $kurz,
@@ -61,14 +64,18 @@ $HeatMap->createImage( 'kuerzel' => $kurz,
                             'kw' => $kw,
                         'scheme' => 'orig'
                      );
+&errors_die( $HeatMap );
 
 $HeatMap->parseData ( 'files' => \@infiles ); # stored in \@ $self->Image->datamatrix
+&errors_die( $HeatMap );
 $HeatMap->buildMainImage ( 'scheme' => 'orig' ); # stored in \@ $self->Image
+&errors_die( $HeatMap );
 
 # HeatMap Image export
 $HeatMap->exportImage( 'filename' => $use_this_output_filename, 
                          'format' => 'gif' 
                      );
+&errors_die( $HeatMap );
 
 
 # print Dumper( $HeatMap );
@@ -133,5 +140,10 @@ EOF
     exit 1;
 }
 
+sub errors_die
+{
+    my $HM = shift;
+    die @{$HM->hasErrors()}  if $HM->hasErrors();
+}
 exit 0;
 

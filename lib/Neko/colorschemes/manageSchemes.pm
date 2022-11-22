@@ -2,8 +2,6 @@
 
 package Neko::colorschemes::manageSchemes;
 
-
-
 use strict;
 use warnings;
 
@@ -43,11 +41,14 @@ sub schemeFuncs{
         return ORIG_buildFarblegende(@_) if $call eq 'buildFarblegende';
         return ORIG_buildCopyright(@_) if $call eq 'buildCopyright';
         return ORIG_buildHeadline(@_) if $call eq 'buildHeadline';
-        return ORIG_calculateColor(@_) if $call eq 'calculateColor';
+# internal use return ORIG_calculateColor(@_) if $call eq 'calculateColor';
     }
     # fallback assume orig scheme
     else {
-        return ORIG_calculateColor(@_) if $call eq 'calculateColor';
+        return ORIG_scheme(@_) if $call eq 'scheme';
+        return ORIG_buildFarblegende(@_) if $call eq 'buildFarblegende';
+        return ORIG_buildCopyright(@_) if $call eq 'buildCopyright';
+        return ORIG_buildHeadline(@_) if $call eq 'buildHeadline';
     }
 
 }

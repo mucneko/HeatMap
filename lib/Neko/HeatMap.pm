@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-
 #OO-Modul
 package Neko::HeatMap;
 
@@ -200,6 +199,10 @@ sub createImage {
         channels => 4
     );
     $img->box(filled=>1, color=>$bgcolor );
+    if ( $img->errstr ) {
+        $self->setError('Fehler beim createImage: '.$img->errstr );
+        return;
+    }
 
     $self->{'Image'} = $img;
 
@@ -233,7 +236,7 @@ sub exportImage {
             $fn = $fn.'.'.$f unless ( $fn =~ /\.$f\s*$/i );
             print "Storing image as: $fn\n";
  
-            $img->write(file=>$fn);
+            $img->write( file=>$fn );
             if ( $img->errstr ) {
                 $self->setError('Fehler beim exportieren: '.$img->errstr );
                 return;
@@ -339,22 +342,10 @@ sub buildMainImage {
     my $kurze = $Config->{'HeatMapOrte'};
     my $ort = $kurze->{$kurz};
 
-    # split here for special patterns
-
-    if ( lc ( $scheme ) eq 'orig' ){
-        $self->schemeFuncs( 'call' => 'scheme', 'kw' => $kw ) ; 
-        $self->schemeFuncs( 'call' => 'buildFarblegende' );
-        $self->schemeFuncs( 'call' => 'buildCopyright', 'text' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
-        $self->schemeFuncs( 'call' => 'buildHeadline', 'headline' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
-    }
-    # elsif ( lc ( $scheme ) eq 'xxx' ){}
-    # noch ist es doppelt
-    else { 
-        $self->schemeFuncs( 'call' => 'scheme', 'kw' => $kw ) ; 
-        $self->schemeFuncs( 'call' => 'buildFarblegende' );
-        $self->schemeFuncs( 'call' => 'buildCopyright',  'text' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
-        $self->schemeFuncs( 'call' => 'buildHeadline', 'headline' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
-    }
+    $self->schemeFuncs( 'call' => 'scheme', 'kw' => $kw ) ; 
+    $self->schemeFuncs( 'call' => 'buildFarblegende' );
+    $self->schemeFuncs( 'call' => 'buildCopyright', 'text' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
+    $self->schemeFuncs( 'call' => 'buildHeadline', 'headline' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
 
 }
 

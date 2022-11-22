@@ -22,12 +22,12 @@ our (@ISA, @EXPORT);
 @ISA = qw(Exporter);
 
 @EXPORT = qw( 
-               ORIG_calculateColor
                ORIG_buildHeadline
                ORIG_buildCopyright
                ORIG_buildFarblegende
                ORIG_scheme
             );
+               # ORIG_calculateColor internal use
 
 my $d = 0; #Debuginf 0|1
 
@@ -67,6 +67,9 @@ sub ORIG_buildCopyright
                     color => 'black',
                      size => $copyFont,
                        aa => 1);
+    if ( $img->errstr ) {
+        $self->setError('Fehler beim 1 align_string: '.$img->errstr );
+    }
 
     # Noch die Ueberschrift drueber
     $img->string(x => ( ( $feldSizex*2)+$offsetx) , y => 40,
@@ -75,6 +78,9 @@ sub ORIG_buildCopyright
              color => 'black',
              size => $feldSizex*2,
              aa => 3);
+    if ( $img->errstr ) {
+        $self->setError('Fehler beim 1 string: '.$img->errstr );
+    }
 
 }
 
@@ -82,7 +88,6 @@ sub ORIG_buildCopyright
 sub ORIG_calculateColor
 {
     # calculate color for ORIG scheme
-    my $self = shift;
     my %args = @_;
 
     my $colors = $args{'colors'};
@@ -103,6 +108,7 @@ sub ORIG_calculateColor
 # errorhandling! if feld an weight are missing
 
 # print "$weight\n";
+# print "$colors->{$weight}  -> @{$colors->{$weight}}\n";
     return @{$colors->{$weight}};
 
 }
@@ -134,6 +140,9 @@ sub ORIG_buildHeadline
              color => 'black',
              size => $feldSizex*2,
              aa => 3);
+    if ( $img->errstr ) {
+        $self->setError('Fehler beim 2 string: '.$img->errstr );
+    }
 }
 
 # color legend at bottom
@@ -193,6 +202,9 @@ sub ORIG_buildFarblegende
              color => 'black',
              size => $feldSizex*0.75,
              aa => 1);
+        if ( $img->errstr ) {
+            $self->setError('Fehler beim 3 string: '.$img->errstr );
+        }
 
         my $fill = Imager::Fill->new(solid => $colors->{$l}, combine => 'normal');
 
@@ -200,6 +212,9 @@ sub ORIG_buildFarblegende
                xmax=> $x+$feldSizex, ymax=> $y ,
                fill=> $fill
         );
+        if ( $img->errstr ) {
+            $self->setError('Fehler beim 1 box: '.$img->errstr );
+        }
 
         # Kasterl drum - platt brutal gewachsen ohne Intelligenz
         if ( $l > 4200 ) {
@@ -211,6 +226,9 @@ sub ORIG_buildFarblegende
                       xmax=> $x+$feldSizex -$i, ymax=> $y -$i,
                       filled => 0 ,
                       aa => 4);
+                if ( $img->errstr ) {
+                    $self->setError('Fehler beim 1 boxen: '.$img->errstr );
+                }
             }
         }
         if ( $l > 2200 ) {
@@ -222,6 +240,9 @@ sub ORIG_buildFarblegende
                       xmax=> $x+$feldSizex -$i, ymax=> $y -$i,
                       filled => 0 ,
                       aa => 4);
+                if ( $img->errstr ) {
+                    $self->setError('Fehler beim 2 boxen: '.$img->errstr );
+                }
             }
         }
 
@@ -230,6 +251,9 @@ sub ORIG_buildFarblegende
                   xmax=> $x+$feldSizex, ymax=> $y,
                   filled => 0 ,
                   aa => 4);
+        if ( $img->errstr ) {
+            $self->setError('Fehler beim 3 boxen: '.$img->errstr );
+        }
         $c++;
     # print "c: $c\n";
         # if ( ( $c % 5 ) == 0 ) {
@@ -297,113 +321,125 @@ sub ORIG_scheme
 
         my $fc = 0; # Feldcounter
 
-            # Altersgruppe mal abfangen und aufheben
-    my $ag = shift @{$p};
-    $ag =~ s/^A//g;
+        # Altersgruppe mal abfangen und aufheben
+        my $ag = shift @{$p};
+        $ag =~ s/^A//g;
 
-    # letzte Zeile hat das manchmal
-    next if ( uc($ag) eq 'UNBEKANNT' );
+        # letzte Zeile hat das manchmal
+        next if ( uc($ag) eq 'UNBEKANNT' );
 
-    foreach my $t ( ($kw) .. ( scalar( @{$p} ) -1 ), 0 .. $kw-1 ) {
-        my @line = @{$p};
+        foreach my $t ( ($kw) .. ( scalar( @{$p} ) -1 ), 0 .. $kw-1 ) {
+            my @line = @{$p};
 
 # if ( $t > 49 ){
 # print '@line: '."@line\n";
 # print 'scalar: ' .scalar( @line )."\n";
 # }
 
-        my $feld = $line[$t];
+            my $feld = $line[$t];
 
 # print '$feld: '.$feld."\n";
 # print '$t: '.$t."\n";
 
-        # Ausgabe auf der Shell letzte Spalte
-        if ( $t == $kw-1 ){
-            # print "$ag: $feld\n";
-            push @verwendeteWerte, "$ag: $feld";
-        }
+            # Ausgabe auf der Shell letzte Spalte
+            if ( $t == $kw-1 ){
+                # print "$ag: $feld\n";
+                push @verwendeteWerte, "$ag: $feld";
+            }
+    
+            $fc++;
+            # last if ( $fc > $kw );
+    
+            # bei den Inzidenzen putzen, die kommen als 1.234,56
+            $feld =~ s/\.//g;
+            $feld =~ s/\,/\./g;
 
-        $fc++;
-        # last if ( $fc > $kw );
-
-        # bei den Inzidenzen putzen, die kommen als 1.234,56
-        $feld =~ s/\.//g;
-        $feld =~ s/\,/\./g;
-
-        my @color = $self->schemeFuncs( 'call' => 'calculateColor',
+            my @color = ORIG_calculateColor (
                                         'feld' => "$feld",
                                       'colors' => $colors,
-                                      'scheme' => $self->getScheme()
-                               );
+                                   );
 
-        my $x = $fc * $feldSizex + $offsetx;
-        $x2 = $x + $feldSizex;
+            my $x = $fc * $feldSizex + $offsetx;
+            $x2 = $x + $feldSizex;
 
 # print "Zeichne: $x, $y -> $x2, $y2 color: @color\n";
 
-        my $fill = Imager::Fill->new(solid => \@color, combine => 'normal');
-        $img->box( xmin=> $x, ymin=> $y,
-                   xmax=> $x2, ymax=> $y2,
-                   fill=> $fill
-                 );
+            my $fill = Imager::Fill->new(solid => \@color, combine => 'normal');
+            $img->box( xmin=> $x, ymin=> $y,
+                       xmax=> $x2, ymax=> $y2,
+                       fill=> $fill
+                     );
+            if ( $img->errstr ) {
+                $self->setError('Fehler beim 2 box: '.$img->errstr );
+            }
 
-        # I need weight here as well.
-        my $weight = -10;
-        $weight = nearest(10, $feld );
-        if ( $feld >= 100 ) {
-            $weight = nearest(50, $feld );
-        }
-        if ( $feld >= 1000 ) {
-            $weight = nearest(100, $feld );
-        }
-
-        # Kasterl drum - platt brutal gewachsen ohne Intelligenz
-        if ( $weight > 4200 ) {
-            # my @mborder_color = $colors->{$weight -4200};
-            my @mborder_color = $self->schemeFuncs( 'call' => 'calculateColor',
+            # I need weight here as well.
+            my $weight = -10;
+            $weight = nearest(10, $feld );
+            if ( $feld >= 100 ) {
+                $weight = nearest(50, $feld );
+            }
+            if ( $feld >= 1000 ) {
+                $weight = nearest(100, $feld );
+            }
+    
+            # Kasterl drum - platt brutal gewachsen ohne Intelligenz
+            if ( $weight > 4200 ) {
+                # my @mborder_color = $colors->{$weight -4200};
+                my @mborder_color = ORIG_calculateColor( 
                                            'weight' => $weight -4200,
                                            'colors' => $colors,
-                                           'scheme' => $self->getScheme()
                                            );
 
-            foreach my $i ( 9..10 ) {
-                $img->box( color => @mborder_color,
+                foreach my $i ( 9..10 ) {
+                    $img->box( color => \@mborder_color,
                          xmin=> $x +$i, ymin=> $y +$i,
                          xmax=>$x2 -$i, ymax=>$y2 -$i,
                          filled => 0,
                          aa => 4);
+                    if ( $img->errstr ) {
+                        $self->setError('Fehler beim 4 boxen: '.$img->errstr );
+                    }
+                }
             }
-        }
-        elsif ( $weight > 2200 ) {
+            elsif ( $weight > 2200 ) {
             # my @mborder_color = $colors->{$weight -2200};
-            my @mborder_color = $self->schemeFuncs( 'call' => 'calculateColor',
+                my @mborder_color = ORIG_calculateColor(
                                            'weight' => $weight -2200,
                                            'colors' => $colors,
-                                           'scheme' => $self->getScheme()
                                            );
 
-            foreach my $i ( 5..7 ) {
-                $img->box( color => @mborder_color,
+
+                foreach my $i ( 5..7 ) {
+                    $img->box( color => \@mborder_color,
                          xmin=> $x +$i, ymin=> $y +$i,
                          xmax=>$x2 -$i, ymax=>$y2 -$i,
                          filled => 0,
                          aa => 4);
+                    if ( $img->errstr ) {
+                        $self->setError('Fehler beim 5 boxen: '.$img->errstr );
+                    }
+                }
+            }
+            $img->box( color=> @border_color, xmin=> $x, ymin=> $y,
+                         xmax=>$x2, ymax=>$y2, filled => 0);
+            if ( $img->errstr ) {
+                $self->setError('Fehler beim 6 boxen: '.$img->errstr );
             }
         }
-        $img->box( color=> @border_color, xmin=> $x, ymin=> $y,
-                         xmax=>$x2, ymax=>$y2, filled => 0);
-    }
 
-    # Altersangabe hinten hin schreiben
-    $img->string(x => ($x2 + 4), y => $y2,
+        # Altersangabe hinten hin schreiben
+        $img->string(x => ($x2 + 4), y => $y2,
              font => $font,
              string =>  $ag,
              color => 'black',
              size => $KW_fontSize,
              aa => 1);
+        if ( $img->errstr ) {
+            $self->setError('Fehler beim 4 string: '.$img->errstr );
+        }
 
     }
-
 
     # KW
     $img->string( x => ($offsetx -( $feldSizex ) ), y => ( $offsety + ( $feldSizey -5 ) ),
@@ -412,6 +448,9 @@ sub ORIG_scheme
                  color => 'black',
                  size => $KW_fontSize,
                  aa => 1);
+    if ( $img->errstr ) {
+        $self->setError('Fehler beim 5 string: '.$img->errstr );
+    }
 
     # 1..53
     my $i = 0;
@@ -424,10 +463,12 @@ sub ORIG_scheme
                  color => 'black',
                  size => $KW_fontSize,
                  aa => 1);
+        if ( $img->errstr ) {
+            $self->setError('Fehler beim 6 string: '.$img->errstr );
+        }
     }
 
     $self->{'parsedData'}{'lastkw'} = \@verwendeteWerte;
-
 
 }
 
