@@ -10,7 +10,6 @@ parseData-Funktion eventuell rausziehen und von auﬂen aufrufbar machen. Ich denk
 
 2Do:
 - add general Errorhandling! don't forget everything with external data that coul go wrong!
-- calculate Color ausklinken
 - Strings auslagern (language vorbereiten)
 
 - 2. scheme monochromatic : farbe nach Liste ohne Sonderspielchen
