@@ -357,6 +357,28 @@ sub buildMainImage {
 }
 
 
+# may change later if dynamic functions work.
+# my @color = schemeFuncs( 'call' => 'calculateColor', 
+#                        'scheme' => $self->getScheme() ,
+#                        'feld' => "$feld", 
+#                        'colors' => $colors, 
+sub schemeFuncs{
+    my $self = shift;
+    my %args = @_;
+
+    my $call = $args{'call'};
+    my $scheme = $args{'scheme'};
+
+    if ( $scheme eq 'orig' ){
+        return $self->calculateColorORIG(@_) if $call eq 'calculateColor';
+    }
+    # fallback assume orig scheme
+    else {
+        return $self->calculateColorORIG(@_) if $call eq 'calculateColor';
+    }
+
+}
+
 # eventuell in ein eigenes pm auslagern, was dann nachgeladen wird und gleichnamige subs hat
 # ORIG_scheme( 'kw' => $kw )
 sub ORIG_scheme
@@ -436,27 +458,15 @@ sub ORIG_scheme
         $fc++;
         # last if ( $fc > $kw );
 
-        my $weight = -10;
-        # die mit dem -1 nicht durchs berechnen schicken.
-        # if ( $feld ne '-1' ) {
-            # bei den Inzidenzen putzen, die kommen als 1.234,56
-            $feld =~ s/\.//g;
-            $feld =~ s/\,/\./g;
+        # bei den Inzidenzen putzen, die kommen als 1.234,56
+        $feld =~ s/\.//g;
+        $feld =~ s/\,/\./g;
 
-# print "Farbe: $feld -> ";
-            $weight = nearest(10, $feld );
-            if ( $feld >= 100 ) {
-                $weight = nearest(50, $feld );
-            }
-            if ( $feld >= 1000 ) {
-                $weight = nearest(100, $feld );
-            }
-        # }
-# print "$weight\n";
-
-# print "Verwende Farbe $weight aus $feld\n";
-
-        my @color = @{$colors->{$weight}};
+        my @color = schemeFuncs( 'call' => 'calculateColor', 
+                                 'feld' => "$feld", 
+                                 'colors' => $colors, 
+                                 'scheme' => $self->getScheme() 
+                               );
 
         my $x = $fc * $feldSizex + $offsetx;
         $x2 = $x + $feldSizex;
@@ -471,7 +481,12 @@ sub ORIG_scheme
 
         # Kasterl drum - platt brutal gewachsen ohne Intelligenz
         if ( $weight > 4200 ) {
-            my @mborder_color = $colors->{$weight -4200};
+            # my @mborder_color = $colors->{$weight -4200};
+            my @mborder_color = schemeFuncs( 'call' => 'calculateColor', 
+                                           'weight' => $weight -4200, 
+                                           'colors' => $colors, 
+                                           'scheme' => $self->getScheme() 
+                                           );
 
             foreach my $i ( 9..10 ) {
                 $img->box( color => @mborder_color,
@@ -482,7 +497,12 @@ sub ORIG_scheme
             }
         }
         elsif ( $weight > 2200 ) {
-            my @mborder_color = $colors->{$weight -2200};
+            # my @mborder_color = $colors->{$weight -2200};
+            my @mborder_color = schemeFuncs( 'call' => 'calculateColor', 
+                                           'weight' => $weight -2200, 
+                                           'colors' => $colors, 
+                                           'scheme' => $self->getScheme() 
+                                           );
 
             foreach my $i ( 5..7 ) {
                 $img->box( color => @mborder_color,
@@ -534,6 +554,33 @@ sub ORIG_scheme
     
 }
 
+# calculate color for ORIG scheme
+sub calculateColorORIG
+{
+    my $self = shift;
+    my %args = @_;
+
+    my $colors = $args{'colors'};
+    my $feld = $args{'feld'};
+    my $weight = $args{'weight'};
+
+    if ( defined $feld ) {
+        $weight = -10;
+    
+        $weight = nearest(10, $feld );
+        if ( $feld >= 100 ) {
+            $weight = nearest(50, $feld );
+        }
+        if ( $feld >= 1000 ) {
+            $weight = nearest(100, $feld );
+        }
+    }
+# errorhandling! if feld an weight are missing
+
+# print "$weight\n";
+    return @{$colors->{$weight}};
+}
+
 # Farb-Legende unten
 sub buildOrigFarblegende
 {
@@ -550,7 +597,6 @@ sub buildOrigFarblegende
 
     # ttf-Font von System verwenden 
     my $font_file = $Config->{'HeatMap'}{'font_file'};
-# XXXX das die noch abfangen
     my $font = Imager::Font->new( file => $font_file ) or $self->setError( "Fehler beim Font laden im buildOrigFarblegende: $!" );
 
     return if $self->hasErrors();
