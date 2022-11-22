@@ -37,11 +37,12 @@ foreach my $dest ( $MUC, $GER ){
 }
 
 # chdir 'bin/';
+chdir $scriptBase;
 
-# print `pwd`;
+print `pwd`;
 
-my $call1 = "./createHeatmap.pl -c $configFile -o MUC -w $kw -f HeatMap_MUC_$datum\.gif $dataBase/$MUC_2021/Data.csv $dataBase/$MUC/Data.csv" ;
-my $call2 = "./createHeatmap.pl -c $configFile -o GER -w $kw -f HeatMap_GER_$datum\.gif $dataBase/$GER_2021/Data.csv $dataBase/$GER/Data.csv" ;
+my $call1 = "./createHeatmap.pl -c $configFile -o MUC -w $kw -f HeatMap_MUC_$datum\_$kw\.gif $dataBase/$MUC_2021/Data.csv $dataBase/$MUC/Data.csv" ;
+my $call2 = "./createHeatmap.pl -c $configFile -o GER -w $kw -f HeatMap_GER_$datum\_$kw\.gif $dataBase/$GER_2021/Data.csv $dataBase/$GER/Data.csv" ;
 # my $call2 = "./createHeatmap.pl GER $kw HeatMap_GER_$datum ../$GER_2021/Data.csv ../$GER/Data.csv" ;
 print "call: ".$call1."\n";
 print `$call1`."\n";

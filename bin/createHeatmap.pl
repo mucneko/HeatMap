@@ -7,6 +7,7 @@ use lib qw(
             /Users/neko/perl5/lib/perl5/darwin-thread-multi-2level
             /Users/neko/perl5/lib/perl5
             /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib
+            /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib/colorschemes
         );
 
 use Neko::HeatMap;
@@ -61,8 +62,8 @@ $HeatMap->createImage( 'kuerzel' => $kurz,
                         'scheme' => 'orig'
                      );
 
-$self->parseData ( 'files' => $infiles ); # stored in \@ $self->Image->datamatrix
-$self->buildMainImage ( 'scheme' => $scheme ); # stored in \@ $self->Image
+$HeatMap->parseData ( 'files' => \@infiles ); # stored in \@ $self->Image->datamatrix
+$HeatMap->buildMainImage ( 'scheme' => 'orig' ); # stored in \@ $self->Image
 
 # HeatMap Image export
 $HeatMap->exportImage( 'filename' => $use_this_output_filename, 
