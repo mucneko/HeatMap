@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+
 #OO-Modul
 package Neko::HeatMap;
 
@@ -130,6 +131,41 @@ sub hasErrors {
     return $self->{'errormsg'};
 }
 
+# ->setKw($kw);
+sub setKw {
+    my $self = shift;
+    my $kw = shift // '';
+    $self->{'Image'}->{'kw'} = $kw;
+}
+# $kw = ->getKw();
+sub getKw {
+    my $self = shift;
+    return $self->{'Image'}->{'kw'};
+}
+
+# ->setKurz($kurz);
+sub setKurz {
+    my $self = shift;
+    my $kurz = shift // '';
+    $self->{'Image'}->{'kurz'} = $kurz;
+}
+# $kw = ->getKurz();
+sub getKurz {
+    my $self = shift;
+    return $self->{'Image'}->{'kurz'};
+}
+
+# ->setScheme($scheme);
+sub setScheme {
+    my $self = shift;
+    my $scheme = shift // '';
+    $self->{'Image'}->{'scheme'} = $scheme;
+}
+# $kw = ->getScheme();
+sub getScheme {
+    my $self = shift;
+    return $self->{'Image'}->{'scheme'};
+}
 # HeatMap->createImage ( 'kuerzel' => 'MUC'|'GER'|'NRW', 
 #                        'infiles' => \@infiles,
 #                        'kw' => 1-53 #Kalenderwoche,
@@ -165,8 +201,9 @@ sub createImage {
 
     $self->{'Image'} = $img;
 
-    $self->parseData ( 'files' => $infiles, 'kw' => $kw ); # stored in \@ $self->Image->datamatrix
-    $self->buildMainImage ( 'scheme' => $scheme , 'kw' => $kw, 'kurz' => $kurz ); # stored in \@ $self->Image->datamatrix
+    $self->setKw( $kw ) if $kw;
+    $self->setKurz( $kurz ) if $kurz;
+    $self->setScheme( $scheme ) if $scheme;
  
 }
 
@@ -214,6 +251,7 @@ sub parseData
     my %args = @_;
     my @infiles = @{ $args{'files'} };
     my $kw = $args{'kw'};
+    $kw = $self->getKw() unless $kw;
 
     my @rki = ();
     # files der Reihe nach einlesen
@@ -274,14 +312,24 @@ sub parseData
     $self->{'Image'}{'datamatrix'} = \@rki;
 }
 
+# \@ = ->getParsedData();
+sub getParsedData
+{
+    my $self = shift;
+    return $self->Image->{'datamatrix'};
+}
+
 # buildMainImage ( 'scheme' => <name> , 'kw' => $kw, 'kurz' => <ortskuerzel> );
 sub buildMainImage {
 
     my $self = shift;
     my %args = @_;
     my $kw = $args{'kw'};
+    $kw = $self->getKw() unless $kw;
     my $kurz = $args{'kurz'};
+    $kurz = $self->getKurz() unless $kurz;
     my $scheme = $args{'scheme'};
+    $scheme = $self->getScheme() unless $scheme;
 
     my $Config = $self->getConfig();
     my $copy = $Config->{'HeatMap'}{'copy'};
