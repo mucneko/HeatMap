@@ -61,6 +61,9 @@ $HeatMap->createImage( 'kuerzel' => $kurz,
                         'scheme' => 'orig'
                      );
 
+$self->parseData ( 'files' => $infiles ); # stored in \@ $self->Image->datamatrix
+$self->buildMainImage ( 'scheme' => $scheme ); # stored in \@ $self->Image
+
 # HeatMap Image export
 $HeatMap->exportImage( 'filename' => $use_this_output_filename, 
                          'format' => 'gif' 
