@@ -67,13 +67,14 @@ $HeatMap->setColorMap( 'file' => $Config->{'HeatMapUser'}{'colorMap'} );
 $HeatMap->createImage( 'kuerzel' => $kurz,
                        'infiles' => \@infiles,
                             'kw' => $kw,
-                        'scheme' => 'orig'
+                        'scheme' => $scheme
                      );
 &errors_die( $HeatMap );
 
 $HeatMap->parseData ( 'files' => \@infiles ); # stored in \@ $self->Image->datamatrix
 &errors_die( $HeatMap );
-$HeatMap->buildMainImage ( 'scheme' => 'orig' ); # stored in \@ $self->Image
+# $HeatMap->buildMainImage ( 'scheme' => $scheme ); # stored in \@ $self->Image
+$HeatMap->buildMainImage ( ); # stored in \@ $self->Image
 &errors_die( $HeatMap );
 
 # HeatMap Image export

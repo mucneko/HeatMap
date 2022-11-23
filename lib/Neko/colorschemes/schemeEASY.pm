@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-package Neko::colorschemes::colorsORIG;
+package Neko::colorschemes::schemeEASY;
 
 use strict;
 use warnings;
@@ -22,17 +22,17 @@ our (@ISA, @EXPORT);
 @ISA = qw(Exporter);
 
 @EXPORT = qw( 
-               ORIG_buildHeadline
-               ORIG_buildCopyright
-               ORIG_buildFarblegende
-               ORIG_scheme
+               EASY_buildHeadline
+               EASY_buildCopyright
+               EASY_buildFarblegende
+               EASY_scheme
             );
-               # ORIG_calculateColor internal use
+               # EASY_calculateColor internal use
 
 my $d = 0; #Debuginf 0|1
 
-# ORIG_buildCopyright( 'text' => <copyrightText> );
-sub ORIG_buildCopyright 
+# EASY_buildCopyright( 'text' => <copyrightText> );
+sub EASY_buildCopyright 
 {
 
     my $self = shift;
@@ -58,6 +58,7 @@ sub ORIG_buildCopyright
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
     my $dat = sprintf("%04d-%02d-%02d", ($year+1900), ($mon +1), $mday );
     $copy = $dat.' '.$copy;
+
 
     # Copyright drunterkleben
     # bottom right-hand corner of the image
@@ -88,15 +89,20 @@ sub ORIG_buildCopyright
 
 }
 
-# calculate color for ORIG scheme
-sub ORIG_calculateColor
+# calculate color for EASY scheme
+sub EASY_calculateColor
 {
-    # calculate color for ORIG scheme
+    # calculate color for EASY scheme
     my %args = @_;
 
     my $colors = $args{'colors'};
     my $feld = $args{'feld'};
     my $weight = $args{'weight'};
+
+    my @keys = sort {$a<=>$b} ( keys %{$colors}  ); 
+    my $lastkey = $keys[-1];
+
+    if ( !$feld && !$weight ) { $feld = 0; }
 
     if ( defined $feld ) {
         $weight = -10;
@@ -109,16 +115,21 @@ sub ORIG_calculateColor
             $weight = nearest(100, $feld );
         }
     }
-# errorhandling! if feld an weight are missing
+
+    # somewhere has to be an end
+    if ( $weight > $lastkey ) { $weight = $lastkey; }
+
+
+# errorhandling! if feld and weight are missing
 
 # print "$weight\n";
-# print "$colors->{$weight}  -> @{$colors->{$weight}}\n";
+# print "\$colors->{$weight}  -> @{$colors->{$weight}}\n";
     return @{$colors->{$weight}};
 
 }
 
 # buildOrigHeadline ( 'headline' => <headline> );)
-sub ORIG_buildHeadline
+sub EASY_buildHeadline
 {
     my $self = shift;
     my %args = @_;
@@ -150,7 +161,7 @@ sub ORIG_buildHeadline
 }
 
 # color legend at bottom
-sub ORIG_buildFarblegende
+sub EASY_buildFarblegende
 {
     my $self = shift;
     my %args = @_;
@@ -161,6 +172,7 @@ sub ORIG_buildFarblegende
     my $feldSizey = $Config->{'HeatMap'}{'feldSize_y'};
     my $offsetx = $Config->{'HeatMap'}{'offset_x'};
     my $offsety = $Config->{'HeatMap'}{'offset_y'};
+    my $reversey = $Config->{'HeatMap'}{'reverse_y'} || 0;
     my $colors = $self->getColorMap(); # $color = @{$colors->{$weight}};
 
     # ttf-Font von System verwenden
@@ -176,8 +188,7 @@ sub ORIG_buildFarblegende
     my $i = '';
     my $c = 0;
     my $y = 20*$feldSizey + $offsety;
-    # my $x = $feldSizex + $offsetx;
-    my $x = $feldSizex;
+    my $x = $feldSizex + $offsetx;
 
 
     foreach my $l ( sort { $a <=> $b } ( keys %{$colors} ) ){
@@ -220,36 +231,6 @@ sub ORIG_buildFarblegende
             $self->setError('Fehler beim 1 box: '.$img->errstr );
         }
 
-        # Kasterl drum - platt brutal gewachsen ohne Intelligenz
-        if ( $l > 4200 ) {
-            my @mborder_color = $colors->{ ($l -4200) } ;
-
-            foreach my $i ( 9..10 ) {
-                $img->box( color=> @mborder_color,
-                      xmin=> $x +$i, ymin=> $y -$feldSizey +$i,
-                      xmax=> $x+$feldSizex -$i, ymax=> $y -$i,
-                      filled => 0 ,
-                      aa => 4);
-                if ( $img->errstr ) {
-                    $self->setError('Fehler beim 1 boxen: '.$img->errstr );
-                }
-            }
-        }
-        if ( $l > 2200 ) {
-            my @mborder_color = $colors->{ ($l -2200) } ;
-
-            foreach my $i ( 5..7 ) {
-                $img->box( color=> @mborder_color,
-                      xmin=> $x +$i, ymin=> $y -$feldSizey +$i,
-                      xmax=> $x+$feldSizex -$i, ymax=> $y -$i,
-                      filled => 0 ,
-                      aa => 4);
-                if ( $img->errstr ) {
-                    $self->setError('Fehler beim 2 boxen: '.$img->errstr );
-                }
-            }
-        }
-
         $img->box( color=> @border_color,
                   xmin=> $x, ymin=> $y -$feldSizey,
                   xmax=> $x+$feldSizex, ymax=> $y,
@@ -277,8 +258,8 @@ sub ORIG_buildFarblegende
 
 }
 
-# ORIG_scheme( 'kw' => $kw )
-sub ORIG_scheme
+# EASY_scheme( 'kw' => $kw )
+sub EASY_scheme
 {
     my $self = shift;
     my %args = @_;
@@ -296,14 +277,18 @@ sub ORIG_scheme
     my $feldSizey = $Config->{'HeatMap'}{'feldSize_y'};
     my $offsetx = $Config->{'HeatMap'}{'offset_x'};
     my $offsety = $Config->{'HeatMap'}{'offset_y'};
+    my $reversey = $Config->{'HeatMap'}{'reverse_y'} || 0;
+    my $img_x = $Config->{'HeatMap'}{'img_x'};
+    my $img_y = $Config->{'HeatMap'}{'img_y'};
     my $colors = $self->getColorMap();
     my $KW_fontSize = $feldSizex;
+    my $bottom_abstand = ( 8 * $feldSizey ) + nearest ( 1, ( 0.5 * $feldSizey ) );
 
     my @verwendeteWerte = ();
 
     # ttf-Font von System verwenden
     my $font_file = $Config->{'HeatMap'}{'font_file'};
-    my $font = Imager::Font->new( file => $font_file ) or $self->setError( "Fehler beim Font laden im ORIG_scheme: $!" );
+    my $font = Imager::Font->new( file => $font_file ) or $self->setError( "Fehler beim Font laden im EASY_scheme: $!" );
 
     return if $self->hasErrors();
 
@@ -320,7 +305,8 @@ sub ORIG_scheme
 
         my $reihe = $counter;
         my $y = $reihe * $feldSizey + $offsety;
-        my $y2 = $y + $feldSizey;
+        if ( $reversey ) { $y = ( $img_y - ($reihe * $feldSizey + $offsety ) ) - $bottom_abstand; }
+        my $y2 = ( $y + $feldSizey );
         my $x2 = 0;
 
         my $fc = 0; # Feldcounter
@@ -358,11 +344,12 @@ sub ORIG_scheme
             $feld =~ s/\.//g;
             $feld =~ s/\,/\./g;
 
-            my @color = ORIG_calculateColor (
+            my @color = EASY_calculateColor (
                                         'feld' => "$feld",
                                       'colors' => $colors,
                                    );
 
+            # my $x = $img_x - ($fc * $feldSizex + $offsetx );
             my $x = $fc * $feldSizex + $offsetx;
             $x2 = $x + $feldSizex;
 
@@ -387,45 +374,7 @@ sub ORIG_scheme
                 $weight = nearest(100, $feld );
             }
     
-            # Kasterl drum - platt brutal gewachsen ohne Intelligenz
-            if ( $weight > 4200 ) {
-                # my @mborder_color = $colors->{$weight -4200};
-                my @mborder_color = ORIG_calculateColor( 
-                                           'weight' => $weight -4200,
-                                           'colors' => $colors,
-                                           );
-
-                foreach my $i ( 9..10 ) {
-                    $img->box( color => \@mborder_color,
-                         xmin=> $x +$i, ymin=> $y +$i,
-                         xmax=>$x2 -$i, ymax=>$y2 -$i,
-                         filled => 0,
-                         aa => 4);
-                    if ( $img->errstr ) {
-                        $self->setError('Fehler beim 4 boxen: '.$img->errstr );
-                    }
-                }
-            }
-            elsif ( $weight > 2200 ) {
-            # my @mborder_color = $colors->{$weight -2200};
-                my @mborder_color = ORIG_calculateColor(
-                                           'weight' => $weight -2200,
-                                           'colors' => $colors,
-                                           );
-
-
-                foreach my $i ( 5..7 ) {
-                    $img->box( color => \@mborder_color,
-                         xmin=> $x +$i, ymin=> $y +$i,
-                         xmax=>$x2 -$i, ymax=>$y2 -$i,
-                         filled => 0,
-                         aa => 4);
-                    if ( $img->errstr ) {
-                        $self->setError('Fehler beim 5 boxen: '.$img->errstr );
-                    }
-                }
-            }
-            $img->box( color=> @border_color, xmin=> $x, ymin=> $y,
+            $img->box( color => @border_color, xmin=> $x, ymin=> $y,
                          xmax=>$x2, ymax=>$y2, filled => 0);
             if ( $img->errstr ) {
                 $self->setError('Fehler beim 6 boxen: '.$img->errstr );

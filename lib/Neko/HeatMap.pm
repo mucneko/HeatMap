@@ -189,7 +189,8 @@ sub createImage {
     # my $bgcolor = $Config->{'HeatMap'}{'bgcolor'};
     my $bgcolor = Imager::Color->new( $Config->{'HeatMap'}{'bgcolor'} );
 
-    my $scheme = Imager::Color->new( $Config->{'HeatMap'}{'scheme'} ) || 'orig';
+    my $scheme = $Config->{'HeatMap'}{'scheme'} || 'orig';
+    $scheme = $args{'scheme'} if ( $args{'scheme'} );
 
     my $infiles = $args{'infiles'};
 

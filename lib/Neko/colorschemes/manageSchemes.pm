@@ -5,8 +5,10 @@ package Neko::colorschemes::manageSchemes;
 use strict;
 use warnings;
 
-use Neko::colorschemes::colorsORIG;
 use Neko::HeatMap;
+use Neko::colorschemes::colorsORIG;
+use Neko::colorschemes::schemeEXPERIMENTAL;
+use Neko::colorschemes::schemeEASY;
 
 # Debugging
 use Data::Dumper;
@@ -36,12 +38,19 @@ sub schemeFuncs{
     my $call = $args{'call'} || Dumper(\%args);
     my $scheme = $self->getScheme();
 
-    if ( $scheme eq 'orig' ){
-        return ORIG_scheme(@_) if $call eq 'scheme';
-        return ORIG_buildFarblegende(@_) if $call eq 'buildFarblegende';
-        return ORIG_buildCopyright(@_) if $call eq 'buildCopyright';
-        return ORIG_buildHeadline(@_) if $call eq 'buildHeadline';
-# internal use return ORIG_calculateColor(@_) if $call eq 'calculateColor';
+# print "schemeFuncs: $scheme\n";
+
+    if ( lc( $scheme ) eq 'easy' ){
+        return EASY_scheme(@_) if $call eq 'scheme';
+        return EASY_buildFarblegende(@_) if $call eq 'buildFarblegende';
+        return EASY_buildCopyright(@_) if $call eq 'buildCopyright';
+        return EASY_buildHeadline(@_) if $call eq 'buildHeadline';
+    }
+    if ( lc( $scheme ) eq 'experimental' ){
+        return EXP_scheme(@_) if $call eq 'scheme';
+        return EXP_buildFarblegende(@_) if $call eq 'buildFarblegende';
+        return EXP_buildCopyright(@_) if $call eq 'buildCopyright';
+        return EXP_buildHeadline(@_) if $call eq 'buildHeadline';
     }
     # fallback assume orig scheme
     else {
