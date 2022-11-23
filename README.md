@@ -12,8 +12,15 @@ parseData-Funktion eventuell rausziehen und von außen aufrufbar machen. Ich denk
 - add general Errorhandling! don't forget everything with external data that could go wrong!
 - Strings auslagern (language vorbereiten)
 
-- 2. scheme monochromatic : farbe nach Liste ohne Sonderspielchen
 - 3. scheme : farbe per Formel berechnen
 
-- rausfinden, ob vorwärtst-rückwärts schmerzfrei geht (0-0Punkt tauschen)
+v rausfinden, ob vorwärtst-rückwärts schmerzfrei geht (0-0Punkt tauschen)
+works:
+add to Config.conf: reverse_y = 0|1
+
 - Schrift hochkant stellen - testen
+
+- Docs!
+ * installation
+ * configuration
+ * use HeatMap.pm

@@ -1,9 +1,9 @@
-1.0
+1.10
 
 PerlModul HeatMap
 helper modules and functions
 
-mor or less external Scheme-models - I like my idea to realize this.
+more or less external Scheme-models - I like my idea to realize this.
 configurable by classic Unix-config style
 Example-scripts for running: 1 to use the Modules, one to make ist easy.
 
