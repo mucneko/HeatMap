@@ -119,11 +119,24 @@ sub EASY_calculateColor
     # somewhere has to be an end
     if ( $weight > $lastkey ) { $weight = $lastkey; }
 
+    # errorhandling! if feld and weight are missing
 
-# errorhandling! if feld and weight are missing
+    # should not happen, except of the colormap is broken
+    my $error = '';
+    if ( !defined $weight ){
+        $error .= "weight ist nicht definiert\n";
+    }
+    if ( !defined $colors ){
+        $error .= "colors ist nicht definiert\n";
+    }
+    if ( !defined $colors->{$weight} ){
+        $error .= "colors->{$weight} ist nicht definiert\n";
+    }
 
-# print "$weight\n";
-# print "\$colors->{$weight}  -> @{$colors->{$weight}}\n";
+    print 'ERROR: '.$error.Dumper(\%args) if $error;
+    
+# print "$weight, $lastkey\n";
+#  print "\$colors->{$weight}  -> @{$colors->{$weight}}\n";
     return @{$colors->{$weight}};
 
 }
