@@ -38,7 +38,6 @@ my @test_files = qw (
                       HeatMap::setConfig.t
                       hmF_loadColorMap.t
                       HeatMap::getColorMap.t
-                      HeatMap::setColorMap.t
                     );
 
 runtests(@test_files);

@@ -168,7 +168,6 @@ sub getScheme {
     return $self->{'Image'}->{'scheme'};
 }
 # HeatMap->createImage ( 'kuerzel' => 'MUC'|'GER'|'NRW', 
-#                        'infiles' => \@infiles,
 #                        'kw' => 1-53 #Kalenderwoche,
 #                        'scheme' => '', # scheme of image: '' Original Version jungest first; 0,0 upper left corner
 #                      );
@@ -191,8 +190,6 @@ sub createImage {
 
     my $scheme = $Config->{'HeatMap'}{'scheme'} || 'orig';
     $scheme = $args{'scheme'} if ( $args{'scheme'} );
-
-    my $infiles = $args{'infiles'};
 
     my $img = Imager->new(
         xsize  => $img_x,        # Image width

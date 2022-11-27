@@ -1,0 +1,183 @@
+Neko::HeatMap OO Module
+
+General: $HeatMap->hasErrors returns an arrayref of all errormessages that happend to this instance
+
+new:
+----
+create a new instance
+
+# provide ConfigFile (filename)
+my $HeatMap = new Neko::HeatMap( 'configFile' => $configFile );
+
+# provide ConfigFile seperately use: ->setConfig see below
+my $HeatMap = new Neko::HeatMap( );
+
+
+setConfig:
+----------
+setConfig( <options> );
+set config parameters in whole.
+That means: adding parameters by using params removes previous settings
+
+options:
+file: filename of ConfigFile
+or:
+params: hashref of Config.
+
+example:
+$HeatMap->setConfig( 'file' => 'filename');
+$HeatMap->setConfig( 'params' => \%config );
+
+
+getConfig:
+----------
+my $hashref = ->getConfig();
+example:
+my $Config = $HeatMap->getConfig();
+
+
+setColorMap:
+-----------
+set the ColorMap to use.
+give the colorMapfile
+
+->setColorMap(<options>);
+
+example:
+$HeatMap->setColorMap( 'file' => $Config->{'HeatMapUser'}{'colorMap'} );
+
+
+getColorMap:
+-----------
+returns the colormap as arrayref
+
+example:
+my $map = $HeatMap->getColorMap();
+
+
+createImage:
+------------
+$HeatMap->createImage(<options>);
+
+options:
+kw: week of the year 1-53
+kurz: shortcut configured in ConfigFile at HeatMapOrte
+scheme: scheme to use - refer to lib/Neko/colorschemes/manageSchemes.pm
+
+example:
+$HeatMap->createImage( 'kuerzel' => 'MUC',
+                            'kw' => 47,
+                        'scheme' => $scheme
+                     );
+
+
+parseData:
+----------
+parse csv-Datafile
+stored in \@ $self->Image->datamatrix
+
+$HeatMap->parseData ( <options> )
+
+options:
+infiles: Arrayref of 2 .csv-Filenames 1. oldyear, 2nd act. year
+
+example:
+$HeatMap->parseData ( 'files' => \@infiles )
+
+buildMainImage:
+---------------
+create the Image according to scheme-settings
+stored in \@ $self->Image
+
+example:
+$HeatMap->buildMainImage (); #stored in \@ $self->Image
+
+exportImage:
+------------
+$HeatMap->exportImage( <options> );
+
+options:
+filename: where to store the resulting image
+format: image format. jpg, gif, svg - maybe you need the appropriate lib<imageformat>
+
+example:
+$HeatMap->exportImage( 'filename' => $use_this_output_filename,
+                         'format' => 'gif'
+                     );
+
+setError:
+---------
+adds an errormsg to the list of errors
+
+setError('msg');
+
+example:
+$HeatMap->setError('errormsg');
+
+
+hasErrors:
+----------
+returns an arrayref of all Errors of this instance
+
+example:
+my \@errors = $HeatMap->hasErrors();
+
+
+internal Use:
+setKw:
+------
+sets week of year for imageoutput seperately
+Image, not config
+
+example:
+$HeatMap->setKW(45);
+
+getKw:
+------
+gets week of year set for this heatmap
+Image, not config
+
+example:
+my $kw = $HeatMap->getKw();
+
+
+setKurz:
+--------
+sets the short name for the place to use seperately
+Image, not config
+
+example:
+$HeatMap->setKurz('MUC');
+
+getKurz:
+--------
+gets the short name for the place to use
+Image, not config
+
+example:
+my $kurz = $HeatMap->getKurz();
+
+
+setScheme:
+--------
+sets the scheme seperately
+Image, not config
+
+example:
+$HeatMap->setScheme('orig');
+
+getScheme:
+--------
+gets the scheme
+Image, not config
+
+example:
+my $scheme = $HeatMap->getScheme();
+
+getParsedData:
+--------------
+returns the parsed data as arrayref
+Image, not config
+
+example:
+my \@data = $HeatMap->getParsedData();

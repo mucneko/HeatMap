@@ -1,0 +1,98 @@
+Installation.
+
+1. prepare your system:
+ImageMagic, Perl. (it's half of CPAN. min)
+
+perlmodules:
+use strict;
+use warnings;
+use Data::Dumper;
+
+use Math::Round qw( nearest nlowmult );
+use Imager;
+use Imager::Fill;
+use Config::Tiny;
+
+use Getopt::Std;
+
+#############################################################
+
+2. Get the files - from git, from a tarball, from whereever
+
+Your project should contain:
+
+Files:
+========================
+.README.md - this file
+License - not really by now
+Makefile - adjust to your own needs, before use
+VERSION - Version number +some comments
+
+bin/
+----
+createHeatmap.pl - main usage example adjust to your needs before use
+makeme.pl - create several heatMaps adjust before use
+
+conf/
+----
+Config.conf - configFilename is gicen at bin/createHeatmap.pl (new Neko::HeatMap( 'configFile' => $configFile );
+
+ORIG_Colors.map - exampleMap for scheme orig
+EASY_Colors.map - exampleMap for scheme easy
+EASY_Colors.map.breit - an other examplemap for scheme easy
+EXP_Colors.map . exampleMap for cheme experimantal
+
+Note 4 scheme easy
+add to Config.conf: reverse_y = 0|1
+
+
+lib/Neko/
+---------
+HeatMap.pm - "THE" HeatMap-module OO
+hmFunctions.pm - helper functions for HeatMap, none OO
+
+lib/Neko/colorschemes
+---------------------
+manageSchemes.pm - add your own schemes here!
+
+colorsORIG.pm - original starting color scheme and rules using some special extensions in colorcreating like colord boxes
+
+schemeEXPERIMENTAL.pm - use this to start with your own experimental new color schemes
+schemeEASY.pm - easy scheme - one colormap, no fancies
+
+tmp/
+don't look too close ;)
+
+t/
+--
+TestConfig.conf - special config to automatically test reading the config
+TestColor.map - colormap for automatic testing
+testme_all.t - run all tests automaticaly
+
+HeatMap::setColorMap.t - test sub setColorMap
+hmF_getConfig.t - test sub hmF_getConfig
+hmF_loadColorMap.t - test sub hmF_loadColorMap
+uses.t - tests uses (use <something>)
+new.t - test new HeatMap
+HeatMap::getConfig.t - test sub HeatMap::getConfig
+HeatMap::getColorMap.t - test sub HeatMap::getColorMap
+
+#############################################################
+
+3. Configure
+bin:
+createHeatmap.pl - adopt use lib pathes and names filenames to your settings
+makeme.pl - adopt use lib pathes and filenames to your settings
+
+conf:
+Config.conf - change to your settings or make a copy and change it (don't forget to adopt makeme.pl and createHeatMap.pl)
+
+details for configuration: see docs/configure
+
+
+
+#############################################################
+
+4. run tests:
+cd t
+./testme_all.t

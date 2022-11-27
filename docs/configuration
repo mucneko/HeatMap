@@ -1,0 +1,106 @@
+Configuration:
+
+# ########################################
+#
+1. ConfigFile (Config.conf)
+classic Unix config style (Config::Tiny)
+
+
+# details for the image
+[HeatMap]
+
+# nearly all borders
+border_color = [ 0, 0, 0 ]
+
+# is needed by some image formats
+bg_color = [ 255, 255, 255 ]
+
+# copyright string - RKI creadits because of data.csv, my credits for the image
+copy = RKI https://survstat.rki.de/ visualized by @muc_NEKO
+
+# copyright font size
+COPY_fontsize = 20
+
+# image size itself
+img_x = 1200
+img_y = 1150
+
+# offsets
+offset_x = 50
+offset_y = 40
+
+# change y-axis top-down
+reverse_y = 1
+
+# single field with HeatColor inside
+feldSize_x = 20
+feldSize_y = 40
+
+# KW means: KalenderWoche = Week of the year
+KW_fontsize = 20
+
+# there is only one font for everything
+font_file = /System/Library/Fonts/Supplemental/Times New Roman.ttf
+
+# font color is given by name
+font_color = black
+
+# scheme to Use see lib/Neko/colorschemes/
+scheme = easy
+
+# about the user
+[HeatMapUser]
+# language to be - not in use
+language = de
+
+# should m igrate to HeatMap, but today, it's here...
+# what colormapfile to use? generally you can use every map with every scheme try playing around!
+colorMap = /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/conf/EASY_Colors.map
+
+# hortcuts for locations-texts (Image Headline) 4 usage see createHeatmap.pl and makeme.pl
+[HeatMapOrte]
+NRW = 'BL NRW'
+MUC = 'SK München'
+GER = 'GERMANY'
+
+
+# ########################################
+#
+2. configure running scriptFiles
+
+bin/createHeatmap.pl
+
+change where to find perlmodules, if not in your path:
+use lib qw (
+               /Users/neko/perl5/lib/perl5/darwin-thread-multi-2level
+               /Users/neko/perl5/lib/perl5
+               /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib
+               /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib/colorschemes
+           );
+
+
+
+bin/makeme.pl
+this example creates 2 HeatMaps. one for GER, one for MUC
+
+every heatMap needs 2 Files: 'old' data and one 'actual' data
+
+this one is the old data. You see it at the weeks of the old year
+my $MUC_2021 = 'survstat_MUC_2021_2022_07_13';
+my $GER_2021 = 'survstat_GER_2021_2022_07_13';
+
+# where to look for the new data-zips
+my $MUC = "survstat_MUC_$datum";
+my $GER = "survstat_GER_$datum";
+
+# where my .zips and their dirs are laying
+my $dataBase = '/Users/neko/Desktop/Covid/Inzidenzen';
+
+# home of makeme.pl
+my $scriptBase = '/Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/bin';
+
+# which configfile to use
+my $configFile = '/Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/conf/Config.conf';
+
+# turn to 1 to get mor output from this script. (Helps if something doesn't work
+my $d = 0; # Debugging 0|1

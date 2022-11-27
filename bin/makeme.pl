@@ -27,6 +27,7 @@ print "call: chdir $dataBase\n" if $d;
 chdir $dataBase; 
 print `pwd`."\n" if $d;
 
+# unpack each .zip into an own directory with same name
 foreach my $dest ( $MUC, $GER ){
 print "\n".$dest."\n" if $d;
 
@@ -42,8 +43,11 @@ print "call: chdir $dest \n" if $d;
         chdir $dest || die $!;
 
 print "call: $tar vxfz $dest.zip\n" if $d;
+          # there is some option to name the destination, ich bin faul, so gehts auch.
           print `$tar vxfz $dest.zip` ."\n";
+
 print "call: rm $dest.zip\n" if $d;
+          # double zipfile is waste
           print `rm $dest.zip`."\n";
 print "call: chdir $dataBase\n" if $d;
           chdir $dataBase;
@@ -52,6 +56,8 @@ print "call: chdir $dataBase\n" if $d;
 
 # chdir 'bin/';
 print " ENDE call: chdir $scriptBase\n" if $d;
+
+# go back to scriptDir
 chdir $scriptBase;
 
 
@@ -62,6 +68,7 @@ chdir $scriptBase;
 # configFile: $configFile
 # EOF
 
+# call createHeatmap.pl with all its lovely options.
 my $call1 = "./createHeatmap.pl -c $configFile -o MUC -w $kw -f HeatMap_MUC_$datum\_$kw\_neu $dataBase/$MUC_2021/Data.csv $dataBase/$MUC/Data.csv" ;
 my $call2 = "./createHeatmap.pl -c $configFile -o GER -w $kw -f HeatMap_GER_$datum\_$kw\_neu $dataBase/$GER_2021/Data.csv $dataBase/$GER/Data.csv" ;
 # my $call2 = "./createHeatmap.pl GER $kw HeatMap_GER_$datum ../$GER_2021/Data.csv ../$GER/Data.csv" ;
@@ -71,6 +78,7 @@ print "call: ".$call2."\n\n";
 print `$call2`."\n";
 
 
+# move pictures into their directories
 # print `pwd`;
 my $call = "mv *MUC*.gif $dataBase/MUC_GIF/";
 print "call: $call\n";

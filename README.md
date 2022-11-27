@@ -1,26 +1,23 @@
 # HeatMap
 
-Ihr braucht ImageMagic und Perl. Halber CPAN. minimum Sonst wirds nix.
+create HeatMap image from csv-Data (as provided from survstat.rki.de)
+with different colormaps and colorschemes
 
-ausserdem bin ich noch nicht fertig.
+more or less external Scheme-models - I like my idea to realize this.
+configurable by classic Unix-config style
+Example-scripts for running: 1 to use the Modules, one to make ist easy.
 
-Status: Errorhandling noch einbauen (weitestgehendst markiert)
-
-parseData-Funktion eventuell rausziehen und von außen aufrufbar machen. Ich denke noch.
+for more Details see 
+docs/installation
+docs/configuration
+docs/HeatMap-API
 
 2Do:
+- Errorhandling - some places
 - add general Errorhandling! don't forget everything with external data that could go wrong!
-- Strings auslagern (language vorbereiten)
+- info-&error strings prepare for different language 
 
-- 3. scheme : farbe per Formel berechnen
+- 3. scheme : calculate color not by map, but by formula
 
-v rausfinden, ob vorwärtst-rückwärts schmerzfrei geht (0-0Punkt tauschen)
-works:
-add to Config.conf: reverse_y = 0|1
+- change font-writing directions (Schrift hochkant stellen - testen)
 
-- Schrift hochkant stellen - testen
-
-- Docs!
- * installation
- * configuration
- * use HeatMap.pm
