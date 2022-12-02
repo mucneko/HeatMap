@@ -32,6 +32,8 @@ bin/
 ----
 createHeatmap.pl - main usage example adjust to your needs before use
 makeme.pl - create several heatMaps adjust before use
+make_anim_gif.pl - create an animated gif. Use all images in the given directory, sorted by name
+make_mastodonImages.pl - create smaller image size: 800x600
 
 conf/
 ----

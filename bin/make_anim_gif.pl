@@ -16,7 +16,7 @@ use Imager;
 use Imager::Fill;
 # use Imager::Font;
 
-my $indir = shift || die "kein Directory bekommen\n";
+my $indir = shift || useageanddie( "kein Directory bekommen" );
 my $use_this_outputname = shift // 'anim_test';
 
 my @files = ();
@@ -46,5 +46,21 @@ print "output: $filename\n";
 
 Imager->write_multi({ file=>$filename, type=>'gif' }, @images)
     or die Imager->errstr;
+
+sub usageanddie
+{
+    my $msg = shift // '';
+    print "ERROR: $msg\n" if $msg;
+
+    print <<EOF;
+
+usage: $0 <indir> [outputfilename]
+
+creates an animated gif from all image in <indir>, sorted by name(!)
+fallback if no outputfile is given: anim_test.gif
+EOF
+
+    exit 1;
+}
 
 exit 0;

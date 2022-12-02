@@ -17,7 +17,7 @@ use Imager;
 use Imager::Fill;
 # use Imager::Font;
 
-my $infile = shift || die "kein file bekommen\n";
+my $infile = shift || usageanddie( "kein file bekommen" );
 my $use_this_outputname = shift // 'mast';
 
 print("verwende: $infile\n");
@@ -41,5 +41,17 @@ if ( $Imager::formats{'gif'} ) {
 
 }
 
+sub usageanddie
+{
+    my $msg = shift // '';
+    print "ERROR: $msg\n" if $msg;
+
+    print <<EOF;
+
+usage: $0 <infile> [<outputfile>]
+
+scales the given image to something in range of 800x600 and stores it in the gifen outputfile
+fallback if no output filename is provided: mast.gif
+EOF
 
 exit 0;
