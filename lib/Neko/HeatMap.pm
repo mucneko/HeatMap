@@ -20,7 +20,7 @@ use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;   # Dumperdaten sortiert (sort) ausgeben
 
 
-my $d = 1; # Debugging 0|1
+my $d = 0; # Debugging 0|1
 
 =head1 NAME
 
@@ -273,9 +273,11 @@ sub parseData
             my @arr = split /\s+/, $line;
         
     # Debugging
-    # print "rki:\n".Dumper (\@rki);
-    # print "arr:\n".Dumper (\@arr);
-    # print "cnt: $cnt \n";
+    # my $od = $d; $d =1;
+    print "rki:\n".Dumper (\@rki) if $d;
+    print "arr:\n".Dumper (\@arr) if $d;
+    print "cnt: $cnt \n" if $d;
+    # $d = $od;
     
             if ( $rki[$cnt] ) {
                 my @rki_arr = @{$rki[$cnt]};
@@ -283,10 +285,10 @@ sub parseData
                 # mit folgejahrdaten ueberschreiben bis zur angeg. kw oder Datenende
                 foreach my $f ( @arr ) {
     
-    # print "cnt: $cnt - c: $c - kw: $kw\n";
+    print "cnt: $cnt - c: $c - kw: $kw\n" if $d;
                     last if ($c > $kw);
     
-    # print "ersetze $rki_arr[$c] mit $f\n";
+    print "ersetze $rki_arr[$c] mit $f\n" if $d;
                     $rki_arr[$c] = $f;
                     $c++;
                 }
@@ -305,6 +307,8 @@ sub parseData
     }
     
     # print Dumper( \@rki );
+    my $l = $rki[6];
+    # print scalar( @{$l} )."\n";
     
     # die obersten beiden Zeilen sind nur die Wochen und Prosa - verwenden wir nicht
     my $muell = shift @rki;
@@ -312,14 +316,14 @@ sub parseData
     $muell = shift @rki;
     # print "entsorge shift ".Dumper($muell);
     
-    $self->{'Image'}{'datamatrix'} = \@rki;
+    $self->{'datamatrix'} = \@rki;
 }
 
 # \@ = ->getParsedData();
 sub getParsedData
 {
     my $self = shift;
-    return $self->Image->{'datamatrix'};
+    return $self->{'datamatrix'};
 }
 
 # buildMainImage ( 'scheme' => <name> , 'kw' => $kw, 'kurz' => <ortskuerzel> );

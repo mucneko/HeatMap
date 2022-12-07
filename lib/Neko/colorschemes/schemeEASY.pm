@@ -282,9 +282,9 @@ sub EASY_scheme
     my $Config = $self->getConfig();
 
     my $img = $self->{'Image'};
-    my @matrix = @{ $self->{'Image'}{'datamatrix'} };
+    my @matrix = @{ $self->getParsedData() };
 
-    my @rki = @{ $self->{'Image'}{'datamatrix'} };
+    my @rki = @{ $self->getParsedData() };
 
     my $feldSizex = $Config->{'HeatMap'}{'feldSize_x'};
     my $feldSizey = $Config->{'HeatMap'}{'feldSize_y'};
@@ -331,7 +331,7 @@ sub EASY_scheme
         # letzte Zeile hat das manchmal
         next if ( uc($ag) eq 'UNBEKANNT' );
 
-        foreach my $t ( ($kw) .. ( scalar( @{$p} ) -1 ), 0 .. $kw-1 ) {
+        foreach my $t ( ($kw) .. ( scalar( @{$p} ) -1 ), 0 .. $kw -1 ) {
             my @line = @{$p};
 
 # if ( $t > 49 ){
@@ -343,7 +343,6 @@ sub EASY_scheme
 
 # print '$feld: '.$feld."\n";
 # print '$t: '.$t."\n";
-
             # Ausgabe auf der Shell letzte Spalte
             if ( $t == $kw-1 ){
                 # print "$ag: $feld\n";

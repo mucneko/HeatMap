@@ -54,4 +54,7 @@ scales the given image to something in range of 800x600 and stores it in the gif
 fallback if no output filename is provided: mast.gif
 EOF
 
+    exit 1;
+}
+
 exit 0;

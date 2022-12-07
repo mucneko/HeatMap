@@ -1,7 +1,11 @@
-1.22
+1.30
 
 PerlModul HeatMap
 helper modules and functions
+
+Change 1.22 -> 1.30
+New storing place in $self for parsedData (datamatrix) Parsed Data
+If you call ->getParsedData() everything is fine.
 
 2Do:
 see README.md

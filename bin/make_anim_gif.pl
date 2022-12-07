@@ -29,6 +29,7 @@ while( ( my $filename = readdir(DIR))) {
 closedir(DIR);
 
 
+# foreach my $file ( sort { $a <=> $b } @files ){
 foreach my $file ( sort @files ){
     next unless $file;
     next if $file =~ /^\.+/;

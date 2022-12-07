@@ -283,9 +283,9 @@ sub EXP_scheme
     my $Config = $self->getConfig();
 
     my $img = $self->{'Image'};
-    my @matrix = @{ $self->{'Image'}{'datamatrix'} };
+    my @matrix = @{ $self->getParsedData() };
 
-    my @rki = @{ $self->{'Image'}{'datamatrix'} };
+    my @rki = @{ $self->getParsedData() };
 
     my $feldSizex = $Config->{'HeatMap'}{'feldSize_x'};
     my $feldSizey = $Config->{'HeatMap'}{'feldSize_y'};
