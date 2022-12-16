@@ -8,7 +8,7 @@ $Data::Dumper::Sortkeys = 1;   # Dumperdaten sortiert (sort) ausgeben
 
 
 my $datum = shift @ARGV // die "kein Datum mitgegeben (z.B. 2022_04_03_0600)";
-my $kw = shift @ARGV // 16;
+my $kw = shift @ARGV // 53;
 my $tar = '/usr/bin/tar';
 
 my $d = 0; # Debugging 0|1
@@ -33,7 +33,7 @@ print "\n".$dest."\n" if $d;
 
     if ( !-f "$dest/Data.csv" ){
 print "call: mkdir $dest\n" if ( $d && !-d $dest ) ;
-        `mkdir $dest`."\n" unless ( -d $dest );
+        `mkdir $dest` unless ( -d $dest );
         die "$dest nicht gefunden\n" unless (-d $dest);
 
 print "call: cp $dest.zip $dest \n" if $d;

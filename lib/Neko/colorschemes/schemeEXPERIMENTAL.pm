@@ -11,6 +11,8 @@ use Data::Dumper;
 use Imager;
 use Imager::Fill;
 
+use Neko::hmFunctions;
+
 # Debugging
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;   # Dumperdaten sortiert (sort) ausgeben
@@ -331,6 +333,7 @@ sub EXP_scheme
 
         # letzte Zeile hat das manchmal
         next if ( uc($ag) eq 'UNBEKANNT' );
+        next if ( uc($ag) eq 'UNKNOWN' );
 
         foreach my $t ( ($kw) .. ( scalar( @{$p} ) -1 ), 0 .. $kw-1 ) {
             my @line = @{$p};
@@ -355,8 +358,8 @@ sub EXP_scheme
             # last if ( $fc > $kw );
     
             # bei den Inzidenzen putzen, die kommen als 1.234,56
-            $feld =~ s/\.//g;
-            $feld =~ s/\,/\./g;
+            # oder als 1,234.56
+            $feld = hmF_cleanupData($feld);
 
             my @color = EXP_calculateColor (
                                         'feld' => "$feld",

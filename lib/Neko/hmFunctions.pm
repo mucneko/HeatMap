@@ -24,6 +24,7 @@ our (@ISA, @EXPORT);
 @EXPORT = qw( 
               hmF_getConfig
               hmF_loadColorMap
+              hmF_cleanupData
             );
 
 my $d = 0; #Debuginf 0|1
@@ -79,5 +80,22 @@ sub hmF_loadColorMap
     return %erg;
 }
 
+# my $cnt = hmF_cleanupData($feld);
+sub hmF_cleanupData
+{
+    my $feld = shift // '';
+
+    # bei den Inzidenzen putzen, die kommen als 1.234,56
+    # oder als 1,234.56
+    if ( $feld =~ /[0-9]\,[0-9]{2}$/ ) {
+        $feld =~ s/\.//g;
+        $feld =~ s/\,/\./g;
+    }
+    elsif ( $feld =~ /[0-9]\.[0-9]{2}$/ ) {
+        $feld =~ s/\,//g;
+    }
+
+    return $feld;
+}
 # ##############################################
 1;

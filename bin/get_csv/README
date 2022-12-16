@@ -1,0 +1,24 @@
+
+Gui-Tests mit capybara und cucumber in Ruby
+
+https://cucumber.io/docs/installation/ruby/
+cucumber --init
+
+Einstiegs-Doku ins capybara
+https://www.rubydoc.info/github/teamcapybara/capybara
+
+
+Aufruf: 
+cucumber
+cucumber features/<file>
+
+cucumber features/get_csv_GER.feature 
+
+Help:
+https://www.swtestacademy.com/capybara-tutorial-with-cucumber/
+https://devhints.io/capybar
+https://gist.github.com/beatleboy501/7a47db723cba1472e550b6342abbbaf0
+https://www.rubydoc.info/gems/capybara/Capybara/
+
+Click on AlertBox:
+page.driver.browser.switch_to.alert.accept

@@ -35,6 +35,21 @@ makeme.pl - create several heatMaps adjust before use
 make_anim_gif.pl - create an animated gif. Use all images in the given directory, sorted by name
 make_mastodonImages.pl - create smaller image size: 800x600
 
+get_csv.pl - Quick&Dirty get CSV-Data from survstat.rki.de (using automatic test-Kits Capybara+Cucumber+Ruby)
+
+bin/get_csv
+-----------
+borrowed from automatic testing - cucumber+Capybara+ruby
+
+local.conf -> features/step_definitions/local.conf
+features/basic_test.feature
+         get_csv_MUC.feature	
+         get_csv_GER.feature
+
+         step_definitions/get_csv_GER.rb
+                          local.conf
+         support/env.rb
+
 conf/
 ----
 Config.conf - configFilename is gicen at bin/createHeatmap.pl (new Neko::HeatMap( 'configFile' => $configFile );
