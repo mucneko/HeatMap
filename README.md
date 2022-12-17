@@ -13,6 +13,8 @@ NEW in 1.40 : added scripts for downloading CSV-Data from survstat.rki.de
 
 for more Details see 
 
+Changes
+
 docs/installation
 
 docs/configuration
