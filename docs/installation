@@ -44,7 +44,10 @@ borrowed from automatic testing - cucumber+Capybara+ruby
 local.conf -> features/step_definitions/local.conf
 features/basic_test.feature
          get_csv_MUC.feature	
+         get_csv_MUC_inzidenz.feature	
+         get_csv_MUC_anzahl.feature	
          get_csv_GER.feature
+         get_version.feature
 
          step_definitions/get_csv_GER.rb
                           local.conf
