@@ -34,12 +34,14 @@ createHeatmap.pl - main usage example adjust to your needs before use
 makeme.pl - create several heatMaps adjust before use
 make_anim_gif.pl - create an animated gif. Use all images in the given directory, sorted by name
 make_mastodonImages.pl - create smaller image size: 800x600
+cronjob.pl - calculates date and week of year, call get_csv.pl and makeme.pl
 
 get_csv.pl - Quick&Dirty get CSV-Data from survstat.rki.de (using automatic test-Kits Capybara+Cucumber+Ruby)
 
 bin/get_csv
 -----------
 borrowed from automatic testing - cucumber+Capybara+ruby
+ruby 3.0.0 or higher!
 
 local.conf -> features/step_definitions/local.conf
 features/basic_test.feature

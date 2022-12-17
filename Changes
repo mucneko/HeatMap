@@ -1,6 +1,9 @@
+1.5.0 -> 1.6.0
+    added cronjob.pl called by Cronjob (go to Directory, call it as ./cronjob.pl)
+    
 1.40 -> 1.5.0
-     added some additional get_csv feature-Files.
-     check if expected version of RKI database is the right one.
+    added some additional get_csv feature-Files.
+    check if expected version of RKI database is the right one.
 
 1.30 -> 1.40
     Data are sometimes in xx,xxx.xx and sometimes in xx.xxx,xx

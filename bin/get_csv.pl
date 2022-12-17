@@ -6,7 +6,6 @@ use warnings;
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;   # Dumperdaten sortiert (sort) ausgeben
 
-
 my $datum = shift @ARGV // die "kein Datum mitgegeben (z.B. 2022_04_03)";
 my $d = 0;
 
@@ -41,15 +40,40 @@ if ( $datum ne $year.'_'.$month.'_'.$day ) {
 
 
 `$cucumber features/get_csv_GER.feature`;
+
+my $cnt = 0;
+while ( -f survstat.zip.crdownload ){
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
+    $cnt += 1;
+    sleep 1;
+}
 `mv survstat.zip $zip_dir/survstat_GER_$datum\.zip`;
 
 `$cucumber features/get_csv_MUC.feature`;
+$cnt = 0;
+while ( -f survstat.zip.crdownload ){
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
+    $cnt += 1;
+    sleep 1;
+}
 `mv survstat.zip $zip_dir/survstat_MUC_$datum\.zip`;
 
 `$cucumber features/get_csv_MUC_inzidenz.feature`;
+$cnt = 0;
+while ( -f survstat.zip.crdownload ){
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
+    $cnt += 1;
+    sleep 1;
+}
 `mv survstat.zip $zip_dir/survstat_MUC_$datum\_inzidenz.zip`;
 
 `$cucumber features/get_csv_MUC_anzahl.feature`;
+$cnt = 0;
+while ( -f survstat.zip.crdownload ){
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
+    $cnt += 1;
+    sleep 1;
+}
 `mv survstat.zip $zip_dir/survstat_MUC_$datum\_anzahl.zip`;
 
 chdir '../' || die $!;
