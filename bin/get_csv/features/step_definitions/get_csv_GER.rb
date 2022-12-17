@@ -62,6 +62,8 @@ Given (/^open start page$/) do
   # page.driver.header 'Accept-Language', 'de'
   visit @url
   current_window.resize_to(1200, 2500);
+  #  page.save_screenshot('screen_debug1.png', full: true) 
+  page.save_page('page_debug1.html') ;
 end
 
 When (/^I do my basic test$/) do
