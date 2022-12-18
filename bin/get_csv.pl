@@ -42,7 +42,7 @@ if ( $datum ne $year.'_'.$month.'_'.$day ) {
 `$cucumber features/get_csv_GER.feature`;
 
 my $cnt = 0;
-while ( -f survstat.zip.crdownload ){
+while ( -f 'survstat.zip.crdownload' ){
     die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
     $cnt += 1;
     sleep 1;
@@ -51,7 +51,7 @@ while ( -f survstat.zip.crdownload ){
 
 `$cucumber features/get_csv_MUC.feature`;
 $cnt = 0;
-while ( -f survstat.zip.crdownload ){
+while ( -f 'survstat.zip.crdownload' ){
     die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
     $cnt += 1;
     sleep 1;
@@ -60,7 +60,7 @@ while ( -f survstat.zip.crdownload ){
 
 `$cucumber features/get_csv_MUC_inzidenz.feature`;
 $cnt = 0;
-while ( -f survstat.zip.crdownload ){
+while ( -f 'survstat.zip.crdownload' ){
     die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
     $cnt += 1;
     sleep 1;
@@ -69,7 +69,7 @@ while ( -f survstat.zip.crdownload ){
 
 `$cucumber features/get_csv_MUC_anzahl.feature`;
 $cnt = 0;
-while ( -f survstat.zip.crdownload ){
+while ( -f 'survstat.zip.crdownload' ){
     die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
     $cnt += 1;
     sleep 1;
