@@ -6,8 +6,8 @@ use warnings;
 use lib qw (
                /Users/neko/perl5/lib/perl5/darwin-thread-multi-2level
                /Users/neko/perl5/lib/perl5
-               /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib
-               /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/lib/colorschemes
+               /Users/neko/bin/HeatMap/lib
+               /Users/neko/bin/HeatMap/lib/colorschemes
            );
 
 use Neko::HeatMap;
@@ -80,6 +80,10 @@ $HeatMap->buildMainImage ( ); # stored in \@ $self->Image
 # HeatMap Image export
 $HeatMap->exportImage( 'filename' => $use_this_output_filename, 
                          'format' => 'gif' 
+                     );
+&errors_die( $HeatMap );
+$HeatMap->exportImage( 'filename' => $use_this_output_filename, 
+                         'format' => 'jpg' 
                      );
 &errors_die( $HeatMap );
 
