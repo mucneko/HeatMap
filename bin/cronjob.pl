@@ -7,6 +7,10 @@ use Date::Calc qw( :all );
 
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
                                             localtime(time);
+my $indatum = shift || '';
+my $inkw = shift || '';
+my $datum = '';
+
 $year = $year+1900;
 $mon += 1;
 my ($kw, $wyear) = Week_of_Year($year,$mon,$mday);
@@ -15,12 +19,27 @@ my $kwOrig =$kw;
 $kw -= 1;
 $kw = Weeks_in_Year( ($year-1)) unless $kw;
 
+$datum = "$year\_$mon\_$mday";
+$datum = $indatum if ( $indatum );
+$kw = $inkw if ( $inkw );
+
 print " $year $mon $mday - kw: $kw, $wyear\n";
 
-my $call1 = "./get_csv.pl $year\_$mon\_$mday 2>&1 1 > ../tmp/$year\_$mon\_$mday\_$kw\.txt";
-my $call2 = "./makeme.pl $year\_$mon\_$mday $kw 2>&1 1 >> ../tmp/$year\_$mon\_$mday\_$kw\.txt";
+if ( -f "/Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_$datum\_$kw\_neu.gif" ) {
+    die "/Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_$datum\_$kw\_neu.gif gibts schon, Programm ist schon mal gelaufen -\> exit\n";
+}
 
-my $call3 = "./makeme.pl $year\_$mon\_$mday $kwOrig 2>&1 1 >> ../tmp/$year\_$mon\_$mday\_$kw\.txt";
+# cleanup
+if ( -f '/Users/neko/bin/HeatMap/bin/get_csv/survstat.zip.crdownload' ) {
+    print "$_ unlinke '/Users/neko/bin/HeatMap/bin/get_csv/survstat.zip.crdownload'\n";
+    unlink '/Users/neko/bin/HeatMap/bin/get_csv/survstat.zip.crdownload';
+}
+
+
+my $call1 = "./get_csv.pl $datum 2>&1 1 >> ../tmp/$datum\_$kw\.txt";
+my $call2 = "./makeme.pl $datum $kw 2>&1 1 >> ../tmp/$datum\_$kw\.txt";
+
+my $call3 = "./makeme.pl $datum $kwOrig 2>&1 1 >> ../tmp/$datum\_$kw\.txt";
 
 print "call: $call1\n";
 system ( $call1 );
