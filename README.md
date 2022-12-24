@@ -25,4 +25,4 @@ docs/HeatMap-API
 - info-&error strings prepare for different language 
 - 3. scheme : calculate color not by map, but by formula
 - change font-writing directions (Schrift hochkant stellen - testen)
-
+- Makefile
