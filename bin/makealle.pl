@@ -22,9 +22,9 @@ my $GER_2021 = 'survstat_GER_COVID_2021';
 my $GER_2022 = 'survstat_GER_COVID_2022';
 
 
-my $dataBase = '/Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/tmp';
-my $scriptBase = '/Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/bin';
-my $configFile = '/Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/conf/Config.conf';
+my $dataBase = '/Users/neko/bin/HeatMap/data';
+my $scriptBase = '/Users/neko/bin/HeatMap/bin';
+my $configFile = '/Users/neko/bin/HeatMap/conf/Config.conf';
 
 # go back to scriptDir
 chdir $scriptBase;
@@ -53,5 +53,3 @@ foreach my $kw (1..52){
 }
 
 
-
-# ./createHeatmap.pl -c /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/conf/Config.conf -o MUC -w 46 -f HeatMap_MUC_2022_11_19_46 /Users/neko/Desktop/Covid/Inzidenzen/survstat_MUC_2021_2022_07_13/Data.csv /Users/neko/Desktop/Covid/Inzidenzen/survstat_MUC_2022_11_19/Data.csv

@@ -13,15 +13,15 @@ my $tar = '/usr/bin/tar';
 
 my $d = 0; # Debugging 0|1
 
-my $MUC_2021 = 'survstat_MUC_2021_2022_07_13';
-my $GER_2021 = 'survstat_GER_2021_2022_07_13';
+my $MUC_2021 = 'survstat_MUC_COVID_2021';
+my $GER_2021 = 'survstat_GER_COVID_2021';
 
 my $MUC = "survstat_MUC_$datum";
 my $GER = "survstat_GER_$datum";
 
-my $dataBase = '/Users/neko/Desktop/Covid/Inzidenzen';
-my $scriptBase = '/Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/bin';
-my $configFile = '/Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/conf/Config.conf';
+my $dataBase = '/Users/neko/bin/HeatMap/data';
+my $scriptBase = '/Users/neko/bin/HeatMap/bin';
+my $configFile = '/Users/neko/bin/HeatMap/conf/Config.conf';
 
 print "call: chdir $dataBase\n" if $d;
 chdir $dataBase; 
@@ -80,12 +80,11 @@ print `$call2`."\n";
 
 # move pictures into their directories
 # print `pwd`;
-my $call = "mv *MUC*.gif $dataBase/MUC_GIF/";
+my $call = "mv *MUC*.gif *MUC*.jpg $dataBase/MUC_GIF/";
 print "call: $call\n";
 `$call`;
-$call = "mv *GER*.gif $dataBase/GER_GIF/";
+$call = "mv *GER*.gif *GER*.jpg $dataBase/GER_GIF/";
 print "call: $call\n";
 `$call`;
 
 
-# ./createHeatmap.pl -c /Users/neko/Desktop/Covid/Inzidenzen/bin/HeatMap/conf/Config.conf -o MUC -w 46 -f HeatMap_MUC_2022_11_19_46 /Users/neko/Desktop/Covid/Inzidenzen/survstat_MUC_2021_2022_07_13/Data.csv /Users/neko/Desktop/Covid/Inzidenzen/survstat_MUC_2022_11_19/Data.csv
