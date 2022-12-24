@@ -25,8 +25,11 @@ $kw = $inkw if ( $inkw );
 
 print " $year $mon $mday - kw: $kw, $wyear\n";
 
-if ( -f "/Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_$datum\_$kw\_neu.gif" ) {
-    die "/Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_$datum\_$kw\_neu.gif gibts schon, Programm ist schon mal gelaufen -\> exit\n";
+if ( -f "/Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_MUC_$datum\_$kw\_neu.gif" ) {
+    die "/Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_MUC_$datum\_$kw\_neu.gif gibts schon, Programm ist schon mal gelaufen -\> exit\n";
+}
+else {
+    print "$_ /Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_MUC_$datum\_$kw\_neu.gif nicht gefunden\nIch schau mal, was geht.\n";
 }
 
 # cleanup
