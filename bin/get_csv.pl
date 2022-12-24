@@ -12,7 +12,7 @@ my $d = 0;
 my $dest = 'get_csv';
 my $MUC_ZIP = 'get_csv_MUC.feature';
 my $GER_ZIP = 'get_csv_GER.feature';
-my $zip_dir = '/Users/neko/Desktop/Covid/Inzidenzen';
+my $zip_dir = '/Users/neko/bin/HeatMap/data/';
 
 my $cucumber = '/Users/neko/.rvm/gems/ruby-3.0.0/bin/cucumber';
 
@@ -38,12 +38,16 @@ if ( $datum ne $year.'_'.$month.'_'.$day ) {
     die "$datum ne $year\_$month\_$day -> exit \n";
 }
 
+if ( -f 'survstat.zip.crdownload' ) {
+    print STDERR 'survstat.zip.crdownload vom letzten Lauf gefunden - entferne es'."\n";
+    unlink 'survstat.zip.crdownload';
+}
 
 `$cucumber features/get_csv_GER.feature`;
 
 my $cnt = 0;
 while ( -f 'survstat.zip.crdownload' ){
-    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 120;
     $cnt += 1;
     sleep 1;
 }
@@ -52,7 +56,7 @@ while ( -f 'survstat.zip.crdownload' ){
 `$cucumber features/get_csv_MUC.feature`;
 $cnt = 0;
 while ( -f 'survstat.zip.crdownload' ){
-    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 120;
     $cnt += 1;
     sleep 1;
 }
@@ -61,7 +65,7 @@ while ( -f 'survstat.zip.crdownload' ){
 `$cucumber features/get_csv_MUC_inzidenz.feature`;
 $cnt = 0;
 while ( -f 'survstat.zip.crdownload' ){
-    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 120;
     $cnt += 1;
     sleep 1;
 }
@@ -70,7 +74,7 @@ while ( -f 'survstat.zip.crdownload' ){
 `$cucumber features/get_csv_MUC_anzahl.feature`;
 $cnt = 0;
 while ( -f 'survstat.zip.crdownload' ){
-    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 20;
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 120;
     $cnt += 1;
     sleep 1;
 }
