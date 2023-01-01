@@ -1,3 +1,9 @@
+->1.8.0
+    switched to year 2023
+    get_csv internals look for 2023 now
+    helperfiles in bin/ changed to 2022 or 2023 as neccesary
+    added Configfiles for RSV and Influenza - just to look hoe it looks like.
+
 ->1.7.0
     added scripts to let it run as cronjob
 

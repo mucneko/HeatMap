@@ -8,6 +8,7 @@ configurable by classic Unix-config style
 
 Example-scripts for running: 1 to use the Modules, one to make it easy.
 
+NEW in 1.8.0 : switched to year 2023 ! 
 NEW in 1.40 : added scripts for downloading CSV-Data from survstat.rki.de
 (cupypara+cucumber+ruby)
 
