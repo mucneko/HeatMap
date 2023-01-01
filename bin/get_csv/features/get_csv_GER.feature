@@ -9,7 +9,7 @@ Then check for visible input fields
 
 When set Erreger to Covid-19
 
-When set Meldejahr to 2022
+When set Meldejahr to 2023
 When set Merkmale Zeilen to Altersgruppieren 5 Jahre Intervalle
 When set Merkmale Spalten to Meldewoche
 When activate Leere Zeilen

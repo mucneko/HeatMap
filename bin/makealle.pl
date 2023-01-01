@@ -16,13 +16,15 @@ my $d = 0; # Debugging 0|1
 my $MUC_2020 = 'survstat_MUC_COVID_2020';
 my $MUC_2021 = 'survstat_MUC_COVID_2021';
 my $MUC_2022 = 'survstat_MUC_COVID_2022';
+my $MUC_2023 = 'survstat_MUC_COVID_2023';
 
 my $GER_2020 = 'survstat_GER_COVID_2020';
 my $GER_2021 = 'survstat_GER_COVID_2021';
 my $GER_2022 = 'survstat_GER_COVID_2022';
+my $GER_2023 = 'survstat_GER_COVID_2023';
 
 
-my $dataBase = '/Users/neko/bin/HeatMap/data';
+my $dataBase = '/Users/neko/bin/HeatMap/tmp';
 my $scriptBase = '/Users/neko/bin/HeatMap/bin';
 my $configFile = '/Users/neko/bin/HeatMap/conf/Config.conf';
 
@@ -52,4 +54,14 @@ foreach my $kw (1..52){
     print `$call2`."\n";
 }
 
+# 2023
+foreach my $kw (1..52){
+    my $xkw = sprintf "%02d", $kw;
+    my $call1 = "./createHeatmap.pl -c $configFile -o MUC -w $kw -f $dataBase/MUC_GIF/2023$xkw $dataBase/$MUC_2022/Data.csv $dataBase/$MUC_2023/Data.csv" ;
+    my $call2 = "./createHeatmap.pl -c $configFile -o GER -w $kw -f $dataBase/GER_GIF/2023$xkw $dataBase/$GER_2022/Data.csv $dataBase/$GER_2023/Data.csv" ;
+    print "call: ".$call1."\n\n";
+    print `$call1`."\n";
+    print "call: ".$call2."\n\n";
+    print `$call2`."\n";
+}
 

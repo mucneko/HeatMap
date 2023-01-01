@@ -144,6 +144,35 @@ When (/^set Meldejahr to 2022$/) do
 
   if page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_1_ListBoxFilterLevelMembers_0_chosen"]')
 
+    page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_1_ListBoxFilterLevelMembers_0_chosen"]').find('//li[@data-option-array-index="1"]').click;
+
+  else
+      puts "selectmenue nicht gefunden";
+  end 
+
+end
+
+When (/^set Meldejahr to 2023$/) do
+  puts "open fields for Meldejahr"
+  puts "open menue"
+  page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_DropDownListFilterHierarchy_1_chosen"]').click();
+  puts "choose Year of notification"
+  find('//li[@title="Year of the calendar week in which the local health authority officially took notice of the case for the first time, either by reports or own investigations. For the 1. and 53. calender week, the year of the calender week may differ from the year of a given day."]').click();
+
+  puts "fill in 2023"
+
+  if page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_1_ListBoxFilterLevelMembers_0_chosen"]')
+
+    puts "jahr gefunden";
+
+    # does not work as expected
+    # page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_1_ListBoxFilterLevelMembers_0_chosen"] ').find('//input[@value="Select options"][@type="text"]').click
+    all('//input[@value="Select options"][@type="text"]')[4].click;
+
+  end
+
+  if page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_1_ListBoxFilterLevelMembers_0_chosen"]')
+
     page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_1_ListBoxFilterLevelMembers_0_chosen"]').find('//li[@data-option-array-index="0"]').click;
 
   else

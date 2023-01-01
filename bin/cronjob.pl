@@ -25,11 +25,14 @@ $kw = $inkw if ( $inkw );
 
 print " $year $mon $mday - kw: $kw, $wyear\n";
 
+print "DEBUGGING: /Users/neko/bin/HeatMap/data/MUC_GIF/ suche /Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_MUC_$datum\_$kw\_neu.gif \n".`ls -lart /Users/neko/bin/HeatMap/data/MUC_GIF/`."\n";
+
 if ( -f "/Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_MUC_$datum\_$kw\_neu.gif" ) {
-    die "/Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_MUC_$datum\_$kw\_neu.gif gibts schon, Programm ist schon mal gelaufen -\> exit\n";
+    print "/Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_MUC_$datum\_$kw\_neu.gif gibts schon, Programm ist schon mal gelaufen -\> exit\n";
+    exit 1;
 }
 else {
-    print "$_ /Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_MUC_$datum\_$kw\_neu.gif nicht gefunden\nIch schau mal, was geht.\n";
+    print " /Users/neko/bin/HeatMap/data/MUC_GIF/HeatMap_MUC_$datum\_$kw\_neu.gif nicht gefunden\nIch schau mal, was geht.\n";
 }
 
 # cleanup
