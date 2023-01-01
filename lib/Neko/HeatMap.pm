@@ -132,6 +132,18 @@ sub hasErrors {
     return $self->{'errormsg'};
 }
 
+# ->setGroup($group);
+sub setGroup {
+    my $self = shift;
+    my $group = shift // '';
+    $self->{'Image'}->{'group'} = $group;
+}
+# $kw = ->getGroup();
+sub getGroup {
+    my $self = shift;
+    return $self->{'Image'}->{'group'};
+}
+
 # ->setKw($kw);
 sub setKw {
     my $self = shift;
@@ -170,12 +182,14 @@ sub getScheme {
 # HeatMap->createImage ( 'kuerzel' => 'MUC'|'GER'|'NRW', 
 #                        'kw' => 1-53 #Kalenderwoche,
 #                        'scheme' => '', # scheme of image: '' Original Version jungest first; 0,0 upper left corner
+#                        'group' => '', # group / illness
 #                      );
 sub createImage {
     my $self = shift;
     my %args = @_;
     my $Config = $self->getConfig();
 
+    my $group = $args{'group'};
     my $kw = $args{'kw'};
     my $kurz = $args{'kuerzel'};
 
@@ -204,6 +218,7 @@ sub createImage {
 
     $self->{'Image'} = $img;
 
+    $self->setGroup( $group ) if $group;
     $self->setKw( $kw ) if $kw;
     $self->setKurz( $kurz ) if $kurz;
     $self->setScheme( $scheme ) if $scheme;
@@ -220,7 +235,6 @@ sub exportImage {
     my $format = $args{'format'} || 'sgi';
     my $file = 'platzhalter';
     # my $saved = 0;
-
 
     # for my $f ( qw( gif jpeg ) ) 
     # jpg is bigger than gif
@@ -326,7 +340,7 @@ sub getParsedData
     return $self->{'datamatrix'};
 }
 
-# buildMainImage ( 'scheme' => <name> , 'kw' => $kw, 'kurz' => <ortskuerzel> );
+# buildMainImage ( 'scheme' => <name> , 'kw' => $kw, 'kurz' => <ortskuerzel>, 'group' => <Krankheit> );
 sub buildMainImage {
 
     my $self = shift;
@@ -337,6 +351,9 @@ sub buildMainImage {
     $kurz = $self->getKurz() unless $kurz;
     my $scheme = $args{'scheme'};
     $scheme = $self->getScheme() unless $scheme;
+    my $group = $args{'group'};
+    $group = $self->getGroup() unless $group;
+    $group = 'Covid19' unless $group;
 
     my $Config = $self->getConfig();
     my $copy = $Config->{'HeatMap'}{'copy'};
@@ -346,8 +363,8 @@ sub buildMainImage {
 
     $self->schemeFuncs( 'call' => 'scheme', 'kw' => $kw ) ; 
     $self->schemeFuncs( 'call' => 'buildFarblegende' );
-    $self->schemeFuncs( 'call' => 'buildCopyright', 'text' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
-    $self->schemeFuncs( 'call' => 'buildHeadline', 'headline' => 'HeatMap Covid19, Inzidenzen, '.$ort.', nach Alter' );
+    $self->schemeFuncs( 'call' => 'buildCopyright', 'text' => 'HeatMap '.$group.', Inzidenzen, '.$ort.', nach Alter' );
+    $self->schemeFuncs( 'call' => 'buildHeadline', 'headline' => 'HeatMap '.$group.', Inzidenzen, '.$ort.', nach Alter' );
 
 }
 
