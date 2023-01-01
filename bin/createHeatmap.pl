@@ -22,11 +22,12 @@ my $use_this_output_filename = '';
 my $kurz = 'MUC';
 my $kw = 52;
 my $scheme = 'orig';
+my $group = 'Covid19';
 
 &usage_and_die() if ($#ARGV < 0);
 
 my %opts;
-getopts('c:f:ho:w:', \%opts) || &usage_and_die($_) ;
+getopts('c:f:g:ho:w:', \%opts) || &usage_and_die($_) ;
 
 if ( exists $opts{'h'} ) {
     &usage_and_die();
@@ -36,6 +37,9 @@ if ( exists $opts{'c'} ) {
 }
 if ( exists $opts{'f'} ) {
     $use_this_output_filename = $opts{'f'}; 
+}
+if ( exists $opts{'g'} ) {
+    $group = $opts{'g'}; 
 }
 if ( exists $opts{'o'} ) {
     $kurz = $opts{'o'}; 
@@ -59,6 +63,9 @@ my $Config = $HeatMap->getConfig();
 if ( $Config->{'HeatMap'}{'scheme'} ) {
     $scheme = $Config->{'HeatMap'}{'scheme'};
 }
+if ( $Config->{'HeatMap'}{'group'} ) {
+    $group = $Config->{'HeatMap'}{'group'};
+}
 
 $HeatMap->setColorMap( 'file' => $Config->{'HeatMapUser'}{'colorMap'} );
 &errors_die( $HeatMap );
@@ -66,6 +73,7 @@ $HeatMap->setColorMap( 'file' => $Config->{'HeatMapUser'}{'colorMap'} );
 # HeatMap Image create
 $HeatMap->createImage( 'kuerzel' => $kurz,
                        'infiles' => \@infiles,
+                         'group' => $group,
                             'kw' => $kw,
                         'scheme' => $scheme
                      );
@@ -73,6 +81,11 @@ $HeatMap->createImage( 'kuerzel' => $kurz,
 
 $HeatMap->parseData ( 'files' => \@infiles ); # stored in \@ $self->Image->datamatrix
 &errors_die( $HeatMap );
+
+# find maxkw an set kw if necessary
+my $kwmax = scalar( @{ @{ $HeatMap->getParsedData()}[1] } ) - 1 ;
+$HeatMap->setKw($kwmax) if $kw > $kwmax;
+
 # $HeatMap->buildMainImage ( 'scheme' => $scheme ); # stored in \@ $self->Image
 $HeatMap->buildMainImage ( ); # stored in \@ $self->Image
 &errors_die( $HeatMap );
@@ -82,13 +95,16 @@ $HeatMap->exportImage( 'filename' => $use_this_output_filename,
                          'format' => 'gif' 
                      );
 &errors_die( $HeatMap );
+
 $HeatMap->exportImage( 'filename' => $use_this_output_filename, 
-                         'format' => 'jpg' 
+                         'format' => 'jpeg' 
                      );
 &errors_die( $HeatMap );
 
 
 # print Dumper( $HeatMap );
+# print scalar ( @{ $HeatMap->{'parsedData'}[10] } ) ." Eintraege\n";
+# print join ( "\n", @{ $HeatMap->{'parsedData'}[10] } ) ."\n";
 print join( "\n", @{ $HeatMap->{'parsedData'}{'lastkw'} } ) ."\n";
 
 
