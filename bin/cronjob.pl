@@ -20,8 +20,12 @@ $kw -= 1;
 $kw = Weeks_in_Year( ($year-1)) unless $kw;
 
 $datum = "$year\_$mon\_$mday";
+$datum = sprintf "%04d_%02d_%02d", $year, $mon, $mday;
+
 $datum = $indatum if ( $indatum );
 $kw = $inkw if ( $inkw );
+
+
 
 print " $year $mon $mday - kw: $kw, $wyear\n";
 
