@@ -1,3 +1,13 @@
+->1.8.1
+    for every feature
+    select "English" and select "neue Abfrage"
+    
+    Added lots of debugging output (images and html - will be removed later)
+    Added some helpful things in the .rb-File:
+    * make Screenshot and save it as $filename
+    * get HTML-Code and save it as $filename
+    * click on an link=anchor
+
 ->1.8.0
     switched to year 2023
     get_csv internals look for 2023 now
