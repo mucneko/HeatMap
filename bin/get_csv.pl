@@ -21,13 +21,17 @@ chdir $dest || die $!;
 
 
 `$cucumber features/get_version.feature`;
-`cat page_debug1.html`;
+`cat get_feature.html`;
 
-my @Currents = split ("\n",`grep Current page_debug1.html`);
+my @Currents = split ("\n",`grep Current get_feature.html`);
+
+# print "Currents @Currents\n";
 my $fst = shift @Currents;
 my( $year, $month, $day ) = ('','','');
 print $fst."\n";
+
 if ( $fst =~ /selected\=\"selected\".*Current \(([0-9]{4})\-([0-9]{2})\-([0-9]{2}) / ) {
+# if ( $fst =~ /selected\=\"selected\".*Aktuell \(([0-9]{4})\-([0-9]{2})\-([0-9]{2}) / ) {
 print "matches\n";
     $year = $1;
     $month = $2;
@@ -47,7 +51,7 @@ if ( -f 'survstat.zip.crdownload' ) {
 
 my $cnt = 0;
 while ( -f 'survstat.zip.crdownload' ){
-    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 120;
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 240;
     $cnt += 1;
     sleep 1;
 }
@@ -56,7 +60,7 @@ while ( -f 'survstat.zip.crdownload' ){
 `$cucumber features/get_csv_MUC.feature`;
 $cnt = 0;
 while ( -f 'survstat.zip.crdownload' ){
-    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 120;
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 240;
     $cnt += 1;
     sleep 1;
 }
@@ -65,7 +69,7 @@ while ( -f 'survstat.zip.crdownload' ){
 `$cucumber features/get_csv_MUC_inzidenz.feature`;
 $cnt = 0;
 while ( -f 'survstat.zip.crdownload' ){
-    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 120;
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 240;
     $cnt += 1;
     sleep 1;
 }
@@ -74,7 +78,7 @@ while ( -f 'survstat.zip.crdownload' ){
 `$cucumber features/get_csv_MUC_anzahl.feature`;
 $cnt = 0;
 while ( -f 'survstat.zip.crdownload' ){
-    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 120;
+    die "$cnt gewartet, survstat.zip.crdownload gibts noch immer - fishy\n" if $cnt > 240;
     $cnt += 1;
     sleep 1;
 }

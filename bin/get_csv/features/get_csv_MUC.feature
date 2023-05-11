@@ -4,6 +4,10 @@ Scenario: get data for Muenchen from survstat.rki.de
 Given open start page
 
 When I choose Abfrage erstellen
+When I click on "English"
+
+Then make BrowserPicture and save it as "get_csv_MUC_0.png"
+
 When I add new Filter
 Then check for visible input fields
 
@@ -15,5 +19,8 @@ When set Merkmale Zeilen to Altersgruppieren 5 Jahre Intervalle
 When set Merkmale Spalten to Meldewoche
 When activate Leere Zeilen
 When activate Inzidenzen
+
+Then make BrowserPicture and save it as "get_csv_MUC_1.png"
+
 When click ZIP herunterladen
 

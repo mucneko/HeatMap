@@ -37,12 +37,6 @@ Capybara.default_selector = :xpath
 # pass :visible => false or set Capybara.ignore_hidden_elements = false.
 Capybara.ignore_hidden_elements = false
 
-Given (/^Details-Seite mit lid oeffnen$/) do
-  @url = "#{$baseURL}#{$details_view}?lid=#{$lid}"
-  puts "lade #{@url}"
-  visit @url
-end
-
 
 Given (/^open test page$/) do
   @url = "#{$testPageURL}"
@@ -93,7 +87,8 @@ When (/^I do my basic test$/) do
 end
 
 When (/^I choose Abfrage erstellen$/) do
-  # brauchts nicht
+  page.find('//a[@id="RepeaterFooterMenu_RepeaterFooterSubMenu_1_HyperLinkSubMenuItem_1"]').click();
+  
 end
 
 When (/^I add new Filter$/) do
@@ -108,16 +103,22 @@ When (/^set Erreger to Covid-19$/) do
   puts "choose Desease"
   page.find('//li[@data-option-array-index="2"]').click();
   puts "fill in Covid-19"
+  page.save_screenshot('setErreger_0.png', full: true) 
+  page.save_page('setErreger_0.html') ;
 
   if page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_0_ListBoxFilterLevelMembers_0_chosen"]').first('//input[@value="Select options"][@type="text"]')
     puts "covid-19 gefunden";
     page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_0_ListBoxFilterLevelMembers_0_chosen"]').first('//input[@value="Select options"][@type="text"]').click
   end
 
+  page.save_screenshot('setErreger_1.png', full: true) 
+  page.save_page('setErreger_1.html') ;
+
   if page.find('//select[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_0_ListBoxFilterLevelMembers_0"]')
 
     page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_RepeaterFilterLevel_0_ListBoxFilterLevelMembers_0_chosen"]').find('//li[@data-option-array-index="7"]').click;
 
+  page.save_screenshot('setErreger_2.png', full: true) 
   else
       puts "selectmenue nicht gefunden";
   end 
@@ -231,6 +232,13 @@ When (/^click ZIP herunterladen$/) do
   page.save_page('page_debug1.html') ;
 end
 
+When (/^I click on "(.*?)"$/) do |linktext|
+  print "klicke auf: ", linktext, "\n";
+  click_link linktext
+end  
+
+
+
 Then (/^check for visible input fields$/) do
   if page.find('//div[@id="ContentPlaceHolderMain_ContentPlaceHolderAltGridFull_RepeaterFilter_DropDownListFilterHierarchy_0_chosen"]')
     puts "field for Reference definition gefunden"
@@ -252,6 +260,13 @@ Then (/^check for visible input fields$/) do
 
 end
 
+Then (/^make BrowserPicture and save it as "(.*?)"$/) do |filename|
+  page.save_screenshot(filename, full: true);
+end
+
+Then (/^save HTML-Page as "(.*?)"$/) do |filename|
+  page.save_page(filename) ;
+end
 
 #proto
 Given (/^xxxx$/) do
